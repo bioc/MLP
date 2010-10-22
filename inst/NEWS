@@ -1,0 +1,56 @@
+0.99.0
+   o no longer export utility functions
+0.0-14
+   o add examples to help pages
+0.0-13
+   o comply with R 2.12.x
+0.0-12
+   o fix main title handling in plotGOgraph
+   o fix main title handling for mlpBarplot in case the geneSetSource are external data (data frame)
+0.0-11
+   o fix in plotGeneSetSignificance (psids)
+   o typo NEWS file
+0.0-10
+   o updated vignette
+   o change argument criticalValues of the MLP function to probabilityVector
+   o trivial change example data set
+0.0-9
+   o updated default grey scales for plot(., type = "barplot")
+   o default grey for plotGeneSetSignificance set to 'grey50'
+   o substantial improvement to vignette (An) 
+   o uniform use of 'main' argument for main titles in plot functions
+0.0-8
+   o add Dog species funcionality to getGeneSets (public GO and KEGG annotation only)
+   o getGeneSets: replace eset argument by entrezIdentifiers argument
+   o use geneSetSource instead of pathwaySource for uniformity across 
+     all functions (most notably getGeneSets)
+   o plot(., type = "barplot") now allows for specifying colors for the bars
+     (barColors argument) and includes fix
+   o fix colors and legend for plot(., type = "GOgraph")
+   o added plotGeneSetSignificance
+   o impose character type for geneSetDescription in MLP output (instead of factor)
+0.0-7
+   o add type = "GOgraph" to the plot method for MLP objects
+   o rudimentary draft for vignette included
+0.0-6
+   o store pathwaySource information in MLP output object
+   o integrate addGeneSetDescription into MLP function and adapt mlpBarplot accordingly
+   o remove plot argument from quantileCurves (argument was not used)
+   o introduce plot method with support for type = "barplot" and type = "quantileCurves"
+0.0-5
+   o goAnnotation replaced by the more general getGeneSets (for other pathway sources than the GO data base)
+   o added mlpBarplot
+0.0-4
+   o significant speedups for goAnnotation and addGeneSetDescription
+   o renamed summary.MLP to addGeneSetDescription
+   o add support for dogs
+   o documentation fixes
+   o remove (deprecated) goInputMLP
+   o remove dead code in goAnnotation
+   o remove pperm, tStatistic and their utility functions (limma being preferred)
+0.0-3
+   o fix probeset names (exclude non-numeric ones)
+0.0-2
+   o fix in summary.MLP
+0.0-1
+   o first package version
