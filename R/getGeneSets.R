@@ -10,9 +10,9 @@
 #' for non-public data sources, the user can pass the pathway data as a dataframe with (at least) 
 #' the following four columns: PATHWAYID, TAXID, PATHWAYNAME and GENEID. It is assumed all columns
 #' are of type character.
-#' @param entrezIdentifiers Entrez ID identifiers used to subset the relevant gene set
+#' @param entrezIdentifiers Entrez Gene identifiers used to subset the relevant gene set
 #' @return object of class geneSetMLP which is essentially a named list of pathway categories. 
-#' Each list component contains a vector of Entrez IDs related to that particular pathway
+#' Each list component contains a vector of Entrez Gene identifiers related to that particular pathway
 #' @import AnnotationDbi
 #' @examples if (require(GO.db) && require(org.Mm.eg.db)){
 #'   pathExampleData <- system.file("exampleFiles", "expressionSetGcrma.rda", package = "MLP")

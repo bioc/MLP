@@ -2,11 +2,14 @@
 #' @param geneSet object of class 'geneSetMLP' as produced by function getGeneSets
 #' @param geneSetIdentifier identifier of the gene set for which a significance plot should be produced;
 #'   character of length one  
-#' @param geneStatistic vector of gene statistics (e.g. p values) 
+#' @param geneStatistic named vector of gene statistics (e.g. p values); the names of the vector
+#'   are Entrez Gene identifiers 
 #' @param annotationPackage name of the annotation package to be used (without .db extension);
 #'   character of length one
-#' @param barColors vector of colors to use for the bars of the barplot; defaults to NULL
-#'  in which case 'grey50' is used 
+#' @param barColors named vector of colors to use for the bars of the barplot; the 
+#' names of the vector are Entrez Gene identifiers and the vector should be of length equal
+#' to the length of the geneStatistic vector 
+#' defaults to NULL in which case 'grey50' is used 
 #' @return no return value 
 #' @examples
 #' pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
@@ -15,7 +18,7 @@
 #' load(pathExampleGeneSet)
 #' load(pathExamplePValues)
 #' load(pathExampleMLPResult) 
-#' annotationPackage <- if (require(mouse4302mmentrezg)) "mouse4302mmentrezg" else "mouse4302"
+#' annotationPackage <- if (require(mouse4302mmentrezg.db)) "mouse4302mmentrezg" else "mouse4302"
 #' geneSetID <- rownames(exampleMLPResult)[1]
 #' dev.new(width = 10, height = 10)
 #' op <- par(mar = c(25, 10, 6, 2))
@@ -35,28 +38,35 @@ plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, a
   if (!geneSetIdentifier %in% names(geneSet))
     stop("Please provide as 'geneSetName' a gene set name belonging to 'geneSets', i.e. the group of gene sets specified.")
   
+  if (!is.null(barColors) && (length(barColors) != length(geneStatistic)))
+    stop("'colorBars' should be a vector of the same length as 'geneStatistic'")
+  
+  if (!is.null(barColors) && is.null(names(barColors)))
+    stop("'colorBars' should be a named vector of the same length as 'geneStatistic'")
+  
+  
   require(annotate)
   require(paste(annotationPackage, ".db", sep = ""), character.only = TRUE)
   
   
   entrezids <- geneSet[[geneSetIdentifier]]
   entrezids <- entrezids[entrezids %in% names(geneStatistic)]
-  genePvalues <- geneStatistic[entrezids]
-  genePvalues <- sort(genePvalues)
-  psids <- if (length(grep("_at", names(genePvalues))) == 0){
-    paste(names(genePvalues), "_at", sep = "")
+  genePValues <- geneStatistic[entrezids]
+  genePValues <- sort(genePValues)
+  psids <- if (length(grep("_at", names(genePValues))) == 0){
+    paste(names(genePValues), "_at", sep = "")
   } else {
-    names(genePvalues)
+    names(genePValues)
   }
-  names(genePvalues) <- paste(
+  barColors <- if (is.null(barColors)) "grey50" else barColors[names(genePValues)]
+  
+  names(genePValues) <- paste(
       unlist(lookUp(psids, annotationPackage, "SYMBOL")),
       unlist(lookUp(psids, annotationPackage, "GENENAME")),
       sep = ":")
-  names(genePvalues) <- substr(names(genePvalues), 1, 60)
+  names(genePValues) <- substr(names(genePValues), 1, 60)
   
-  barColors <- if (is.null(barColors)) "grey50" else barColors
-  
-  barplot(-log10(genePvalues), xlab = "", 
+  barplot(-log10(genePValues), xlab = "", 
       main = paste("Significance of tested genes involved in gene set", geneSetIdentifier), 
       border = "white", col = barColors,
       las = 3, ylab = "Significance")

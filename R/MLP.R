@@ -3,7 +3,7 @@
 #' can be obtained either as individual gene set p values or p values based on smoothing
 #' across gene sets of similar size.
 #' @param geneSet is the input list of gene sets (components) and gene IDs (character vectors). 
-#' A gene set can, for example, be a GO category with for each category Entrez gene identifiers; 
+#' A gene set can, for example, be a GO category with for each category Entrez Gene identifiers; 
 #' The \link{getGeneSets} function can be used to construct the geneSet argument for different
 #' pathway sources.
 #' @param geneStatistic is either a named numeric vector (if rowPermutations is TRUE)
