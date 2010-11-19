@@ -16,7 +16,7 @@ ascending geneSetPValue.}
 \references{Raghavan, Nandini et al. (2007). The high-level similarity of some disparate gene expression measures,
 Bioinformatics, 23, 22, 3032-3038.}
 \arguments{\item{geneSet}{is the input list of gene sets (components) and gene IDs (character vectors). 
-A gene set can, for example, be a GO category with for each category Entrez gene identifiers; 
+A gene set can, for example, be a GO category with for each category Entrez Gene identifiers; 
 The \link{getGeneSets} function can be used to construct the geneSet argument for different
 pathway sources.}
 \item{geneStatistic}{is either a named numeric vector (if rowPermutations is TRUE)
