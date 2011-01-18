@@ -26,6 +26,8 @@ mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL) {
   geneSetSource <- attr(object, "geneSetSource")
   mlpResults <- head(object, nRow)
   dat <- -log10(mlpResults$geneSetPValue)
+  #Fix Inf values
+  dat[is.infinite(dat)] <- max(dat[is.finite(dat)]) + 50
   names(dat) <- rownames(mlpResults)
   
   if (is.null(barColors)){
