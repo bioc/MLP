@@ -30,8 +30,8 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
   if (is.null(geneSetSource)) 
     stop("Please provide a source of gene sets. For more info, see the help page.")
   if (!is.data.frame(geneSetSource) & all(!(geneSetSource %in% 
-            c("GOBP", "GOMF", "GOCC", "KEGG")))) 
-    stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC', 'KEGG' or a data.frame.  More info, see help.")
+            c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) 
+    stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC', 'KEGG', 'REACTOME' or a data.frame.  More info, see help.")
   if (is.data.frame(geneSetSource)) 
     if (any(!(c("PATHWAYID", "TAXID", "PATHWAYNAME", "GENEID") %in% 
               colnames(geneSetSource)))) 
@@ -67,19 +67,42 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
                   length)) > 0, TRUE, FALSE)
       geneSets <- geneSets[anyGenesInGeneSet]
     }
-    else {
+    if (geneSetSource == "KEGG") {
       require(KEGG.db)
       geneSetToEntrez <- as.list(KEGGPATHID2EXTID)
-      switch(species, Mouse = {
+      switch(species, 
+          Mouse = {
             prefix <- "mmu"
-          }, Human = {
+          },
+          Human = {
             prefix <- "hsa"
-          }, Rat = {
+          }, 
+          Rat = {
             prefix <- "rno"
-          }, Dog = {
+          }, 
+          Dog = {
             prefix <- "cfa"
           })
       geneSets <- geneSetToEntrez[grep(prefix, names(geneSetToEntrez))]
+    }
+    if (geneSetSource == "REACTOME") {
+      require(reactome.db)
+      pathways <- toTable(reactomePATHNAME2ID)
+      allReactomeIDs <- ls(reactomePATHID2EXTID)
+      switch(species, Mouse = {
+            pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", pathways$path_name), ]
+            #Neem eerst de reactomeids met een mapping beperk deze vervolgens met de geselecteerde species.
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+          }, Human = {
+            pathwaysSelectedSpecies <- pathways[grep("Homo sapiens: ", pathways$path_name), ]
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+          }, Rat = {
+            pathwaysSelectedSpecies <- pathways[grep("Rattus norvegicus: ", pathways$path_name), ]
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+          }, Dog = {
+            pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", pathways$path_name), ]
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+          })
     }
   }
   else {

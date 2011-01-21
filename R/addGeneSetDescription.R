@@ -40,6 +40,13 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
       stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
     returnValue <- data.frame(object, geneSetDescription = unlist(allKEGGterms[geneSetNames]), stringsAsFactors = FALSE)
   }
+  if (any(geneSetSource %in% c("REACTOME"))) {
+    allReactomeIds <- as.list(reactomePATHID2NAME)
+    geneSetNames <- names(dat)
+    if (!all(geneSetNames %in% names(allReactomeIds))) 
+      stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
+    descr <- allReactomeIds[geneSetNames]
+  }
   if (all(!(geneSetSource %in% c("GOBP", "GOMF", "GOCC", "KEGG")))) {
     if (!all(rownames(object) %in% geneSetSource$PATHWAYID)) 
       stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
