@@ -124,10 +124,11 @@ This function has 3 parameters:
 \item \texttt{geneSetSource} = a string or a data.frame (more info below)
 \item \texttt{entrezIdentifiers} = a character vector of Entrez Gene identifiers for which gene statistics are available
 \end{itemize}
-The \texttt{geneSetSource} can be a string, i.e. 'GOBP', 'GOMF', 'GOCC' or 'KEGG'.
+The \texttt{geneSetSource} can be a string, i.e. \texttt{'GOBP'}, \texttt{'GOMF'}, \texttt{'GOCC'}, \texttt{'KEGG'} or \texttt{'REACTOME'}.
 The downstream analysis in these cases will identify gene sets, publicly available,
 as defined by the \href{http://www.geneontology.org/}{Gene Ontology Consortium}
-for the first 3 or by the \href{http://www.genome.jp/kegg/}{Kyoto Encyclopedia of Genes and Genomes}.
+for the first 3 , the \href{http://www.genome.jp/kegg/}{Kyoto Encyclopedia of Genes and Genomes}
+and \href{http://www.reactome.org}{REACTOME}.
 The \texttt{geneSetSource} can also be a data.frame with at least the following 4 columns:
 \begin{itemize}
 \item \texttt{PATHWAYID} = identifier of the gene set
