@@ -5,7 +5,7 @@
 #' @param species character vector of length one indicating the species, one of
 #' 'Mouse', 'Human' or 'Rat'; defaults to 'Mouse'. 
 #' @param geneSetSource source to be used to construct the list of pathway categories; 
-#' for public data sources, the user can specify a string (one of 'GOBP', 'GOMF', 'GOCC' or 'KEGG')
+#' for public data sources, the user can specify a string (one of 'GOBP', 'GOMF', 'GOCC', 'KEGG' or 'REACTOME')
 #' and BioC packages will be used to construct the list of pathway categories; 
 #' for non-public data sources, the user can pass the pathway data as a dataframe with (at least) 
 #' the following four columns: PATHWAYID, TAXID, PATHWAYNAME and GENEID. It is assumed all columns

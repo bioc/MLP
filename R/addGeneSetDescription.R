@@ -2,7 +2,7 @@
 #' a column to the return value of the MLP function (data frame)
 #' @param object object of class 'MLP' as produced by the 'MLP' function 
 #' @param geneSetSource source to be used to construct the list of pathway categories; 
-#' for public data sources, the user can specify a string (one of 'GOBP', 'GOMF', 'GOCC' or 'KEGG')
+#' for public data sources, the user can specify a string (one of 'GOBP', 'GOMF', 'GOCC', 'KEGG' or 'REACTOME')
 #' and BioC packages will be used to construct the list of pathway categories; 
 #' for non-public data sources, the user can pass the pathway data as a dataframe with (at least) 
 #' the following four columns: PATHWAYID, TAXID, PATHWAYNAME and GENEID. It is assumed all columns
@@ -21,7 +21,7 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
   if (is.null(geneSetSource)) 
     stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
   if (any(!is.data.frame(geneSetSource) & !(geneSetSource %in% 
-            c("GOBP", "GOMF", "GOCC", "KEGG")))) 
+            c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) 
     stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
   if (any(is.data.frame(geneSetSource) & !(c("PATHWAYID", "TAXID", 
                 "PATHWAYNAME", "GENEID") %in% colnames(geneSetSource)))) 
@@ -47,7 +47,7 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
       stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
     descr <- allReactomeIds[geneSetNames]
   }
-  if (all(!(geneSetSource %in% c("GOBP", "GOMF", "GOCC", "KEGG")))) {
+  if (all(!(geneSetSource %in% c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) {
     if (!all(rownames(object) %in% geneSetSource$PATHWAYID)) 
       stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
     idx <- match(rownames(object), geneSetSource$PATHWAYID)
