@@ -41,11 +41,21 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
     returnValue <- data.frame(object, geneSetDescription = unlist(allKEGGterms[geneSetNames]), stringsAsFactors = FALSE)
   }
   if (any(geneSetSource %in% c("REACTOME"))) {
-    allReactomeIds <- as.list(reactomePATHID2NAME)
-    geneSetNames <- names(dat)
-    if (!all(geneSetNames %in% names(allReactomeIds))) 
+    require(reactome.db)
+    pathways <- toTable(reactomePATHNAME2ID)
+    switch(species, 
+      Mouse = {pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", iconv(pathways$path_name)), ]
+        pathwaysSelectedSpecies$path_name <- gsub("Mus musculus: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
+      Human = {pathwaysSelectedSpecies <- pathways[grep("Homo sapiens: ", iconv(pathways$path_name)), ]
+        pathwaysSelectedSpecies$path_name <- gsub("Homo sapiens: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
+      Rat = {pathwaysSelectedSpecies <- pathways[grep("Rattus norvegicus: ", iconv(pathways$path_name)), ]
+        pathwaysSelectedSpecies$path_name <- gsub("Rattus norvegicus: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
+      Dog = {pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", iconv(pathways$path_name)), ]
+        pathwaysSelectedSpecies$path_name <- gsub("Canis familiaris: ", "", iconv(pathwaysSelectedSpecies$path_name))})
+    geneSetNames <- rownames(object)
+    if (!all(geneSetNames %in% pathwaysSelectedSpecies$reactome_id)) 
       stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-    descr <- allReactomeIds[geneSetNames]
+    returnValue <- data.frame(object, geneSetDescription = sapply(geneSetNames, function(x) pathwaysSelectedSpecies[pathwaysSelectedSpecies$reactome_id == x, 2]), stringsAsFactors = FALSE)
   }
   if (all(!(geneSetSource %in% c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) {
     if (!all(rownames(object) %in% geneSetSource$PATHWAYID)) 

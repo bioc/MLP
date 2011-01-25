@@ -90,17 +90,17 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
       pathways <- toTable(reactomePATHNAME2ID)
       allReactomeIDs <- ls(reactomePATHID2EXTID)
       switch(species, Mouse = {
-            pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", pathways$path_name), ]
+            pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", iconv(pathways$path_name)), ]
             #Neem eerst de reactomeids met een mapping beperk deze vervolgens met de geselecteerde species.
             geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
           }, Human = {
-            pathwaysSelectedSpecies <- pathways[grep("Homo sapiens: ", pathways$path_name), ]
+            pathwaysSelectedSpecies <- pathways[grep("Homo sapiens: ", iconv(pathways$path_name)), ]
             geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
           }, Rat = {
-            pathwaysSelectedSpecies <- pathways[grep("Rattus norvegicus: ", pathways$path_name), ]
+            pathwaysSelectedSpecies <- pathways[grep("Rattus norvegicus: ", iconv(pathways$path_name)), ]
             geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
           }, Dog = {
-            pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", pathways$path_name), ]
+            pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", iconv(pathways$path_name)), ]
             geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
           })
     }
