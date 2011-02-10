@@ -24,6 +24,10 @@ mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL) {
     stop("'object' should be an object of class 'MLP' as produced by the MLP function")
   
   geneSetSource <- attr(object, "geneSetSource")
+  
+  if (is.null(object$geneSetDescription)) {
+    object <- addGeneSetDescription(object, geneSetSource = geneSetSource)
+  }
   mlpResults <- head(object, nRow)
   dat <- -log10(mlpResults$geneSetPValue)
   #Fix Inf values
@@ -42,39 +46,7 @@ mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL) {
     barColors <- barColors
   }
   
-  if (is.null(object$geneSetDescription)) {
-    if (is.data.frame(geneSetSource)) {
-      if (!all(rownames(object) %in% geneSetSource$PATHWAYID)) 
-        stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-      idx <- match(names(dat), geneSetSource$PATHWAYID)
-      descr <- geneSetSource$PATHWAYNAME[idx]
-    } else {
-      if (geneSetSource %in% c("GOBP", "GOMF", "GOCC")) {
-        allGOTerms <- as.list(Term(GOTERM))
-        if (!all(names(dat) %in% names(allGOTerms))) 
-          stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-        descr <- allGOTerms[names(dat)]
-      } else {
-        if (geneSetSource == "KEGG") {
-          allKEGGterms <- as.list(KEGGPATHID2NAME)
-          geneSetNames <- gsub("^[[:alpha:]]{3}", "", names(dat))
-          if (!all(geneSetNames %in% names(allKEGGterms))) 
-            stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-          descr <- allKEGGterms[geneSetNames]
-        }
-        if (geneSetSource == "REACTOME") {
-          allReactomeIds <- as.list(reactomePATHID2NAME)
-          geneSetNames <- names(dat)
-          if (!all(geneSetNames %in% names(allReactomeIds))) 
-            stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-          descr <- allReactomeIds[geneSetNames]
-        }
-      }
-    }
-  } else {
-     descr <- mlpResults$geneSetDescription
-  }
-
+  descr <- mlpResults$geneSetDescription
   descriptionLength <- 60
   descr <- substr(descr, 1, descriptionLength)
   names(dat) <- paste(descr, " (", mlpResults$testedGeneSetSize, 
