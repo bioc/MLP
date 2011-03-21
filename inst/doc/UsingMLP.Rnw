@@ -1,6 +1,5 @@
 \documentclass[a4paper]{article}
 \usepackage[OT1]{fontenc}
-\usepackage[utf8]{inputenc}
 \usepackage{geometry}
 \geometry{hmargin = 2cm, vmargin = 2cm }
 \usepackage[plainpages=false,pdfpagelabels]{hyperref}
@@ -386,7 +385,7 @@ dev.off()
 
 \section{References}
 
-Raghavan N, De Bondt AM, Talloen W, Moechars D, Göhlmann HW, Amaratunga D.
+Raghavan N, De Bondt AM, Talloen W, Moechars D, G\"{o}hlmann HW, Amaratunga D.
 The high-level similarity of some disparate gene expression measures.
 \emph{Bioinformatics}. 2007 Nov 15;23(22):3032-8. Epub 2007 Sep 24.PMID: 17893087
 
