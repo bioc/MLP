@@ -1,3 +1,6 @@
+1.1.1
+   o update using new annotation packages
+   o apply changes to column permutations (contributed by Heather Turner)
 0.99.5
    o further adaptations for use with the reactome.db package
 0.99.4
