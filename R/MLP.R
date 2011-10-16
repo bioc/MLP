@@ -41,9 +41,9 @@
 #' 
 #' @export
 MLP <- function (geneSet, geneStatistic, minGenes = 5, maxGenes = 100, 
-        rowPermutations = TRUE, nPermutations = 100, smoothPValues = TRUE, 
-        probabilityVector = c(0.5, 0.9, 0.95, 0.99, 0.999, 0.9999, 0.99999), 
-        df = 9, addGeneSetDescription = TRUE){
+    rowPermutations = TRUE, nPermutations = 100, smoothPValues = TRUE, 
+    probabilityVector = c(0.5, 0.9, 0.95, 0.99, 0.999, 0.9999, 0.99999), 
+    df = 9, addGeneSetDescription = TRUE){
   if (!inherits(geneSet, "geneSetMLP")) {
     stop("The 'geneSet' should be an object of class 'geneSetMLP' as produced by getGeneSets")
   }
@@ -77,10 +77,11 @@ MLP <- function (geneSet, geneStatistic, minGenes = 5, maxGenes = 100,
   n2 <- nrow(geneStatistic)
   w0 <- t(mlpStatistic(reducedMapResult))
   n11 <- length(geneSets)
+  
   if (!rowPermutations) {
-    w <- mlpStatistic(reducedMapResult)
-  }
-  else {
+    w <- w0[,-2] # take out observed gene set statistics
+    w0 <- w0[, 1:2] # take out gene set statistics for permuted data
+  } else {
     p1 <- apply(matrix(1:n2, n2, nPermutations), 2, sample)
     y1 <- matrix(geneStatistic[p1, 1], n2, nPermutations)
     row.names(y1) <- row.names(geneStatistic)
@@ -90,14 +91,10 @@ MLP <- function (geneSet, geneStatistic, minGenes = 5, maxGenes = 100,
     w <- t(mlpStatistic(mapResultPermuted))
   }
   if (smoothPValues) {
-    if (!rowPermutations) {
-      warning("Cannot smooth p-values if ind.sim = FALSE")
-    }
-    pw0 <- getSmoothedPValues(w0, w[, -1], q.cutoff = probabilityVector, 
+    pw0 <- getSmoothedPValues(w0, w[, -1], q.cutoff = probabilityVector,
         df = df)
-  }
-  else {
-    pw0 <- getIndividualPValues(w0, w)
+  } else {
+    pw0 <- getIndividualPValues(w0, w[, -1])
   }
   res <- data.frame(testedGeneSetSize = w0[, 1], geneSetStatistic = w0[, 
           2], geneSetPValue = pw0)
