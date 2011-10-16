@@ -5,6 +5,7 @@
 #' @param ... further arguments for the plot functions for each type 
 #' @return for type = "barplot", the midpoints of the barplot 
 #' @S3method plot MLP
+#' @method plot MLP
 #' @examples pathExampleMLPResult <- system.file("exampleFiles", "exampleMLPResult.rda", package = "MLP")
 #' load(pathExampleMLPResult)
 #' dev.new(width = 10, height = 10)
