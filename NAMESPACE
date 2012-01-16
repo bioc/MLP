@@ -1,3 +1,4 @@
+export(addGeneSetDescription)
 import(AnnotationDbi)
 export(getGeneSets)
 export(mlpBarplot)

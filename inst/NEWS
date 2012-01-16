@@ -1,3 +1,7 @@
+1.2.1
+   o also export addGeneSetDescription
+1.2.0
+   o BioC release 2.9
 1.1.1
    o update using new annotation packages
    o apply changes to column permutations (contributed by Heather Turner)
