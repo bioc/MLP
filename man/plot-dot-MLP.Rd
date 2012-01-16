@@ -1,7 +1,7 @@
 \name{plot.MLP}
 \alias{plot.MLP}
 \title{Plot the Results of an MLP Run...}
-\usage{\method{plot}{MLP}(x, y, type=c("barplot", "GOgraph", "quantileCurves"), ...)
+\usage{\method{plot}{MLP}(x, y, type=c("barplot\", \"GOgraph\", \"quantileCurves"), ...)
 }
 \description{Plot the Results of an MLP Run}
 \value{for type = "barplot", the midpoints of the barplot}
