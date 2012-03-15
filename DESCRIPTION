@@ -10,10 +10,34 @@ Description: Mean Log P Analysis
 Version: 1.3.0
 biocViews: Genetics
 Date: 2012-01-16
-Depends: AnnotationDbi, affy, plotrix, gplots, gmodels, gdata, gtools
-Suggests: GO.db, org.Hs.eg.db, org.Mm.eg.db, org.Rn.eg.db,
-    org.Cf.eg.db, KEGG.db, annotate, Rgraphviz, GOstats, limma,
-    mouse4302.db, reactome.db
-Collate: 'addGeneSetDescription.R' 'getGeneSets.R' 'mlpBarplot.R'
-    'MLP.R' 'plotGeneSetSignificance.R' 'plotGOgraph.R' 'plot.MLP.R'
-    'plotQuantileCurves.R' 'utils.R'
+Depends:
+    AnnotationDbi,
+    affy,
+    plotrix,
+    gplots,
+    gmodels,
+    gdata,
+    gtools
+Suggests:
+    GO.db,
+    org.Hs.eg.db,
+    org.Mm.eg.db,
+    org.Rn.eg.db,
+    org.Cf.eg.db,
+    KEGG.db,
+    annotate,
+    Rgraphviz,
+    GOstats,
+    limma,
+    mouse4302.db,
+    reactome.db
+Collate:
+    'addGeneSetDescription.R'
+    'getGeneSets.R'
+    'mlpBarplot.R'
+    'MLP.R'
+    'plotGeneSetSignificance.R'
+    'plotGOgraph.R'
+    'plot.MLP.R'
+    'plotQuantileCurves.R'
+    'utils.R'

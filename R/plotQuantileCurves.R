@@ -11,7 +11,7 @@
 #' @return no return value; a quantile curve plot is drawn to the current device
 #' @examples pathExampleMLPResult <- system.file("exampleFiles", "exampleMLPResult.rda", package = "MLP")
 #' load(pathExampleMLPResult)
-#' @nord
+#' @noRd
 plotQuantileCurves <- function(x0, y0, hqi, xtp, qi, lqi, sym = TRUE, main = NULL) {
  
   mainTitle <- if (is.null(main)) "" else main

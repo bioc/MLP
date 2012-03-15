@@ -1,3 +1,6 @@
+1.3.0
+   o update using new annotation packages
+   o move to roxygen2
 1.2.1
    o also export addGeneSetDescription
 1.2.0
