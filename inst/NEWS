@@ -1,3 +1,5 @@
+1.4.1
+   o better checks on geneSetSource in getGeneSets 
 1.3.0
    o update using new annotation packages
    o move to roxygen2
