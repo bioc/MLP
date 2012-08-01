@@ -29,7 +29,7 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
     stop("The 'species' argument should be one of 'Mouse', 'Human', 'Rat' or 'Dog')")
   if (is.null(geneSetSource)) 
     stop("Please provide a source of gene sets. For more info, see the help page.")
-  if (!is.data.frame(geneSetSource) & all(!(geneSetSource %in% 
+  if (!is.data.frame(geneSetSource) && all(!(geneSetSource %in% 
             c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) 
     stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC', 'KEGG', 'REACTOME' or a data.frame.  More info, see help.")
   if (is.data.frame(geneSetSource)) 
