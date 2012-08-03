@@ -32,9 +32,6 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
   if (!is.data.frame(geneSetSource) && length(geneSetSource) != 1 && !(geneSetSource %in% 
                     c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME"))) 
     stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC', 'KEGG', 'REACTOME' or a data.frame.  More info, see help.")
-  if (!is.data.frame(geneSetSource) & all(!(geneSetSource %in% 
-            c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) 
-    stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC', 'KEGG', 'REACTOME' or a data.frame.  More info, see help.")
   if (is.data.frame(geneSetSource)) 
     if (any(!(c("PATHWAYID", "TAXID", "PATHWAYNAME", "GENEID") %in% 
               colnames(geneSetSource)))) 
