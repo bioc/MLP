@@ -23,19 +23,27 @@
 #'   head(geneSet)
 #' }
 #' @export
-getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifiers) 
-{
+getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifiers){
+  
+  ### checks
   if (!species %in% c("Mouse", "Human", "Rat", "Dog")) 
     stop("The 'species' argument should be one of 'Mouse', 'Human', 'Rat' or 'Dog')")
+
   if (is.null(geneSetSource)) 
     stop("Please provide a source of gene sets. For more info, see the help page.")
+  
   if (!is.data.frame(geneSetSource) && length(geneSetSource) != 1 && !(geneSetSource %in% 
-                    c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME"))) 
+        c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME"))) 
     stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC', 'KEGG', 'REACTOME' or a data.frame.  More info, see help.")
-  if (is.data.frame(geneSetSource)) 
+  
+  if (is.data.frame(geneSetSource)){
+
     if (any(!(c("PATHWAYID", "TAXID", "PATHWAYNAME", "GENEID") %in% 
               colnames(geneSetSource)))) 
       stop("The geneSetSource as data.frame should have at least the 4 columns 'PATHWAYID', 'TAXID', 'PATHWAYNAME' and 'GENEID'. More info on their content, see help.")
+  }
+  
+  ### character
   if (is.character(geneSetSource)) {
     if (geneSetSource %in% c("GOBP", "GOMF", "GOCC")) {
       require(GO.db)
@@ -104,8 +112,7 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
             geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
           })
     }
-  }
-  else {
+  } else { ### data frame
     switch(species, Mouse = {
           TAXID <- "10090"
         }, Human = {
@@ -124,6 +131,7 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
         FUN = list)
     geneSets <- lapply(geneSets, as.character)
   }
+  
   # entrezIds <- sub("_at", "", featureNames(eset))
   tfidx <- sapply(geneSets, function(geneSet) {
         sum(geneSet %in% entrezIdentifiers) > 0
