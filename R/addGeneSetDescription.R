@@ -13,57 +13,70 @@
 #' @seealso \link{MLP} 
 #' @export
 addGeneSetDescription <- function (object, geneSetSource = NULL){
+  ### checks
   if (!inherits(object, "MLP")) 
     stop("'object' should be an object of class 'MLP' as produced by the MLP function")
+  
   if (any(names(object) == "geneSetDescription"))
     warning("The MLP object already contains a column 'geneSetDescription'")
-  species <- attr(object, "species")
+  
   if (is.null(geneSetSource)) 
     stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
-  if (any(!is.data.frame(geneSetSource) & !(geneSetSource %in% 
-            c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) 
-    stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
-  if (any(is.data.frame(geneSetSource) & !(c("PATHWAYID", "TAXID", 
+  
+  if (!is.data.frame(geneSetSource) && (length(geneSetSource) != 1) && !(geneSetSource %in% c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))
+    stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")  
+  
+  if (is.data.frame(geneSetSource) && any(!(c("PATHWAYID", "TAXID", 
                 "PATHWAYNAME", "GENEID") %in% colnames(geneSetSource)))) 
     stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
-  if (any(geneSetSource %in% c("GOBP", "GOMF", "GOCC"))) {
-    allGOTerms <- as.list(Term(GOTERM))
-    geneSetNames <- rownames(object)
-    if (!all(geneSetNames %in% names(allGOTerms))) 
-      stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-    returnValue <- data.frame(object, geneSetDescription = unlist(allGOTerms[geneSetNames]), stringsAsFactors = FALSE)
-  }
-  if (any(geneSetSource %in% c("KEGG"))) {
-    allKEGGterms <- as.list(KEGGPATHID2NAME)
-    geneSetNames <- gsub("^[[:alpha:]]{3}", "", rownames(object))
-    if (!all(geneSetNames %in% names(allKEGGterms))) 
-      stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-    returnValue <- data.frame(object, geneSetDescription = unlist(allKEGGterms[geneSetNames]), stringsAsFactors = FALSE)
-  }
-  if (any(geneSetSource %in% c("REACTOME"))) {
-    require(reactome.db)
-    pathways <- toTable(reactomePATHNAME2ID)
-    switch(species, 
-      Mouse = {pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", iconv(pathways$path_name)), ]
-        pathwaysSelectedSpecies$path_name <- gsub("Mus musculus: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
-      Human = {pathwaysSelectedSpecies <- pathways[grep("Homo sapiens: ", iconv(pathways$path_name)), ]
-        pathwaysSelectedSpecies$path_name <- gsub("Homo sapiens: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
-      Rat = {pathwaysSelectedSpecies <- pathways[grep("Rattus norvegicus: ", iconv(pathways$path_name)), ]
-        pathwaysSelectedSpecies$path_name <- gsub("Rattus norvegicus: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
-      Dog = {pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", iconv(pathways$path_name)), ]
-        pathwaysSelectedSpecies$path_name <- gsub("Canis familiaris: ", "", iconv(pathwaysSelectedSpecies$path_name))})
-    geneSetNames <- rownames(object)
-    if (!all(geneSetNames %in% pathwaysSelectedSpecies$reactome_id)) 
-      stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-    returnValue <- data.frame(object, geneSetDescription = sapply(geneSetNames, function(x) pathwaysSelectedSpecies[pathwaysSelectedSpecies$reactome_id == x, 2]), stringsAsFactors = FALSE)
-  }
-  if (all(!(geneSetSource %in% c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME")))) {
+  
+  species <- attr(object, "species")
+  
+  ### deal with character vectors
+  if (!is.data.frame(geneSetSource)){
+    
+    if (geneSetSource %in% c("GOBP", "GOMF", "GOCC")) {
+      allGOTerms <- as.list(Term(GOTERM))
+      geneSetNames <- rownames(object)
+      if (!all(geneSetNames %in% names(allGOTerms))) 
+        stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
+      returnValue <- data.frame(object, geneSetDescription = unlist(allGOTerms[geneSetNames]), stringsAsFactors = FALSE)
+    }
+    
+    if (geneSetSource == "KEGG") {
+      allKEGGterms <- as.list(KEGGPATHID2NAME)
+      geneSetNames <- gsub("^[[:alpha:]]{3}", "", rownames(object))
+      if (!all(geneSetNames %in% names(allKEGGterms))) 
+        stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
+      returnValue <- data.frame(object, geneSetDescription = unlist(allKEGGterms[geneSetNames]), stringsAsFactors = FALSE)
+    }
+    
+    if (geneSetSource == "REACTOME") {
+      
+      require(reactome.db)
+      pathways <- toTable(reactomePATHNAME2ID)
+      switch(species, 
+          Mouse = {pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", iconv(pathways$path_name)), ]
+            pathwaysSelectedSpecies$path_name <- gsub("Mus musculus: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
+          Human = {pathwaysSelectedSpecies <- pathways[grep("Homo sapiens: ", iconv(pathways$path_name)), ]
+            pathwaysSelectedSpecies$path_name <- gsub("Homo sapiens: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
+          Rat = {pathwaysSelectedSpecies <- pathways[grep("Rattus norvegicus: ", iconv(pathways$path_name)), ]
+            pathwaysSelectedSpecies$path_name <- gsub("Rattus norvegicus: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 
+          Dog = {pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", iconv(pathways$path_name)), ]
+            pathwaysSelectedSpecies$path_name <- gsub("Canis familiaris: ", "", iconv(pathwaysSelectedSpecies$path_name))})
+      geneSetNames <- rownames(object)
+      if (!all(geneSetNames %in% pathwaysSelectedSpecies$reactome_id)) 
+        stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
+      returnValue <- data.frame(object, geneSetDescription = sapply(geneSetNames, function(x) pathwaysSelectedSpecies[pathwaysSelectedSpecies$reactome_id == x, 2]), stringsAsFactors = FALSE)
+    }
+    ### deal with a data frame
+  } else {
     if (!all(rownames(object) %in% geneSetSource$PATHWAYID)) 
       stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
     idx <- match(rownames(object), geneSetSource$PATHWAYID)
     returnValue <- data.frame(object, geneSetDescription = geneSetSource$PATHWAYNAME[idx], stringsAsFactors = FALSE)
   }
+  
   class(returnValue) <- c("MLP", class(returnValue))
   return(returnValue)
 }
-
