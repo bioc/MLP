@@ -1,3 +1,5 @@
+1.5.0
+   o update exampleGeneSet.rda using GO.db for BioC 2.11
 1.4.2
    o further improvements in getGeneSets and addGeneSetDescription
 1.4.1
