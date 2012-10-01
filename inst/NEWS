@@ -1,3 +1,5 @@
+1.5.2
+   o remove require(mouse4302mmentrezg.db) calls to keep R CMD check from giving inappropriate warnings
 1.5.0
    o update exampleGeneSet.rda using GO.db for BioC 2.11
 1.4.2

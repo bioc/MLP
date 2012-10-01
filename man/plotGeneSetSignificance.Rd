@@ -40,7 +40,8 @@ pathExampleMLPResult <- system.file("exampleFiles", "exampleMLPResult.rda", pack
 load(pathExampleGeneSet)
 load(pathExamplePValues)
 load(pathExampleMLPResult)
-annotationPackage <- if (require(mouse4302mmentrezg.db)) "mouse4302mmentrezg" else "mouse4302"
+# annotationPackage <- if (require(mouse4302mmentrezg.db)) "mouse4302mmentrezg" else "mouse4302"
+annotationPackage <- "mouse4302"
 geneSetID <- rownames(exampleMLPResult)[1]
 dev.new(width = 10, height = 10)
 op <- par(mar = c(25, 10, 6, 2))

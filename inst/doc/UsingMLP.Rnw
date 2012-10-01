@@ -82,8 +82,9 @@ Load the needed libraries and the preprocessed data.
   require(limma)
   pathExampleData <- system.file("exampleFiles", "expressionSetGcrma.rda", package = "MLP")
   load(pathExampleData)
-  if (!require(mouse4302mmentrezg.db))
-    annotation(expressionSetGcrma) <- "mouse4302"
+  # if (!require(mouse4302mmentrezg.db))
+  #  annotation(expressionSetGcrma) <- "mouse4302"
+  annotation(expressionSetGcrma) <- "mouse4302"
 @  
 
 It is advisable to make use of the annotation packages of the BrainArray 
