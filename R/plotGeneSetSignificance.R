@@ -31,7 +31,7 @@
 #' )
 #' par(op)
 #' @export
-plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, annotationPackage, barColors = NULL){
+plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, annotationPackage, barColors = NULL, descriptionInMainTitle = TRUE){
   
   if (!inherits(geneSet, "geneSetMLP"))
     stop("geneSet should be an object of class 'geneSetMLP' as produced by 'getGeneSets'")
@@ -49,6 +49,7 @@ plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, a
   require(annotate)
   require(paste(annotationPackage, ".db", sep = ""), character.only = TRUE)
   
+  descriptions <- attr(geneSet, "descriptions")
   
   entrezids <- geneSet[[geneSetIdentifier]]
   entrezids <- entrezids[entrezids %in% names(geneStatistic)]
@@ -67,8 +68,13 @@ plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, a
       sep = ":")
   names(genePValues) <- substr(names(genePValues), 1, 60)
   
+  title = paste("Significance of tested genes involved in gene set", geneSetIdentifier)
+  if(descriptionInMainTitle){
+    title = paste("Significance of tested genes involved in gene set", geneSetIdentifier, descriptions[geneSetIdentifier])
+  }
+  
   barplot(-log10(genePValues), xlab = "", 
-      main = paste("Significance of tested genes involved in gene set", geneSetIdentifier), 
+      main = title, 
       border = "white", col = barColors,
       las = 3, ylab = "Significance")
 }

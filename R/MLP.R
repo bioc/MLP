@@ -105,8 +105,13 @@ MLP <- function (geneSet, geneStatistic, minGenes = 5, maxGenes = 100,
   if (is.null(attr(res, "species"))) 
     attr(res, "species") <- species
   if (addGeneSetDescription) {
-    geneSetSource <- attr(geneSet, "geneSetSource")
-    res <- addGeneSetDescription(object = res, geneSetSource = geneSetSource)
+    if(is.null(attr(geneSet, "descriptions"))){
+      geneSetSource <- attr(geneSet, "geneSetSource")
+      res <- addGeneSetDescription(object = res, geneSetSource = geneSetSource)
+    } else{
+      descriptions <- attr(geneSet, "descriptions")
+      res <- data.frame(res, geneSetDescription = descriptions[row.names(res)], stringsAsFactors = FALSE)
+    }
   }
   attr(res, "geneSetSource") <- attr(geneSet, "geneSetSource")
   if (!is.null(attr(pw0, "quantileCurveInformation"))) 

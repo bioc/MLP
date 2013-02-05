@@ -24,6 +24,7 @@
 #' }
 #' @export
 getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifiers){
+  descriptions = "blah"
   
   ### checks
   if (!species %in% c("Mouse", "Human", "Rat", "Dog")) 
@@ -70,6 +71,8 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
       anyGenesInGeneSet <- ifelse(unlist(lapply(geneSets, 
                   length)) > 0, TRUE, FALSE)
       geneSets <- geneSets[anyGenesInGeneSet]
+      goterms <- Term(GOTERM)
+      descriptions <- goterms[names(geneSets)]
     }
     if (geneSetSource == "KEGG") {
       require(KEGG.db)
@@ -88,6 +91,8 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
             prefix <- "cfa"
           })
       geneSets <- geneSetToEntrez[grep(prefix, names(geneSetToEntrez))]
+      descriptions <- unlist(mget(sub("\\D+?(\\d+)", "\\1", names(geneSetToEntrez)), KEGGPATHID2NAME))
+      names(descriptions) <- paste(prefix, names(descriptions), sep = "")
     }
     if (geneSetSource == "REACTOME") {
       require(reactome.db)
@@ -107,6 +112,8 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
             pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", iconv(pathways$path_name)), ]
             geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
           })
+      descriptions <- pathwaysSelectedSpecies$path_name
+      names(descriptions) <- pathwaysSelectedSpecies$reactome_id
     }
   } else { ### data frame
     switch(species, Mouse = {
@@ -126,6 +133,13 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
     geneSets <- by(geneSetSource$GENEID, INDICES = geneSetSource$PATHWAYID, 
         FUN = list)
     geneSets <- lapply(geneSets, as.character)
+    # Get the descriptions
+    tempDescriptions <- geneSetSource[, c("PATHWAYID", "PATHWAYNAME")]
+    tempDescriptions$PATHWAYID <- as.character(tempDescriptions$PATHWAYID)
+    tempDescriptions$PATHWAYNAME <- as.character(tempDescriptions$PATHWAYNAME)
+    tempDescriptions <- unique(tempDescriptions)
+    descriptions <- tempDescriptions[, "PATHWAYNAME"]
+    names(descriptions) <- tempDescriptions$PATHWAYID
   }
   
   # entrezIds <- sub("_at", "", featureNames(eset))
@@ -135,6 +149,8 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
   geneSets <- geneSets[tfidx]
   attr(geneSets, "species") <- species
   attr(geneSets, "geneSetSource") <- geneSetSource
+  attr(geneSets, "descriptions") <- descriptions
+
   class(geneSets) <- c("geneSetMLP", class(geneSets))
   return(geneSets)
 }
