@@ -10,6 +10,8 @@
 #' names of the vector are Entrez Gene identifiers and the vector should be of length equal
 #' to the length of the geneStatistic vector 
 #' defaults to NULL in which case 'grey50' is used 
+#' @param descriptionInMainTitle Boolean whether or not to use the gene set description
+#' in the main title of the plot 
 #' @return no return value 
 #' @examples
 #' pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
