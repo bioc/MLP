@@ -7,9 +7,9 @@ Author: Nandini Raghavan, Tobias Verbeke, An De Bondt with
     contributions by Javier Cabrera, Dhammika Amaratunga, Tine Casneuf
     and Willem Ligtenberg
 Description: Mean Log P Analysis
-Version: 1.7.2
+Version: 1.7.3
 biocViews: Genetics
-Date: 2013-02-05
+Date: 2013-02-27
 Depends:
     AnnotationDbi,
     affy,
