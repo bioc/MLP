@@ -65,9 +65,9 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
           Dog = {pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", iconv(pathways$path_name)), ]
             pathwaysSelectedSpecies$path_name <- gsub("Canis familiaris: ", "", iconv(pathwaysSelectedSpecies$path_name))})
       geneSetNames <- rownames(object)
-      if (!all(geneSetNames %in% pathwaysSelectedSpecies$reactome_id)) 
+      if (!all(geneSetNames %in% pathwaysSelectedSpecies$DB_ID)) 
         stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-      returnValue <- data.frame(object, geneSetDescription = sapply(geneSetNames, function(x) pathwaysSelectedSpecies[pathwaysSelectedSpecies$reactome_id == x, 2]), stringsAsFactors = FALSE)
+      returnValue <- data.frame(object, geneSetDescription = sapply(geneSetNames, function(x) pathwaysSelectedSpecies[pathwaysSelectedSpecies$DB_ID == x, 2]), stringsAsFactors = FALSE)
     }
     ### deal with a data frame
   } else {
