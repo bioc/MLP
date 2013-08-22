@@ -106,7 +106,7 @@ Estimate the fold changes and standard errors by fitting a linear model for each
   fit2 <- eBayes(fit)
   results <- limma:::topTable(fit2, coef = "group", adjust.method = "fdr", number = Inf)
   pvalues <- results[,"P.Value"]
-  names(pvalues) <- results$ID
+  names(pvalues) <- rownames(results)
   # since we moved towards using "_at", next step should be needed as well
   names(pvalues) <- sub("_at", "", names(pvalues))	
 @
