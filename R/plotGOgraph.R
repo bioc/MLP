@@ -75,7 +75,7 @@ plotGOgraph <- function (object, nRow = 5, main = NULL) {
   nodeRenderInfo(basicGraph) <- list(labelJust = "c")
   graphRenderInfo(basicGraph)$main <- main
   renderGraph(basicGraph)
-  smartlegend("right", "bottom", legend = paste(c(" least", 
+  legend("right", "bottom", legend = paste(c(" least", 
               " medium", " most"), " (scores ", round(max(scores)) * 
               c(2, 5, 8)/10, ")", sep = ""), fill = gocolors[round(max(scores)) * 
               c(2, 5, 8)], cex = 0.7)
