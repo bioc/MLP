@@ -8,6 +8,8 @@
 #'   shade is used.
 #' @param main main title; if NULL (default) "Effect of the treatment on <geneSetSource> gene sets"
 #' will be used
+#' @param ylab string with label for the y-axis
+#' @param cex numeric, cex used in \code{par}
 #' @return the midpoints of all the bars are returned invisibly (using the conventions of barplot); 
 #'   an MLP-specific barplot is drawn to the current device;  
 #' @seealso barplot
@@ -18,7 +20,8 @@
 #' mlpBarplot(exampleMLPResult)
 #' par(op)
 #' @export
-mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL) {
+mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL,
+	ylab = "", cex = 1) {
   
   if (!inherits(object, "MLP")) 
     stop("'object' should be an object of class 'MLP' as produced by the MLP function")
@@ -52,9 +55,9 @@ mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL) {
   names(dat) <- paste(descr, " (", mlpResults$testedGeneSetSize, 
       "-", mlpResults$totalGeneSetSize, ")", sep = "")
   bottomMar <- 30
-  op <- par(mar = c(bottomMar, 10, 6, 2))
+  op <- par(mar = c(bottomMar, 10, 6, 2), cex = cex)
   mp <- barplot(dat, xlab = "", main = "", border = "white", 
-      las = 3, ylab = "", col = barColors)
+      las = 3, ylab = ylab, col = barColors)
   if (is.null(main)) {
     if (is.data.frame(geneSetSource)){ # external data
       mainTitle <- "Effect of the treatment on the gene sets"
@@ -64,7 +67,8 @@ mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL) {
   } else {
     mainTitle <- main
   }
-  mtext(mainTitle, side = 2, line = 5)
+  title(mainTitle)
+#  mtext(mainTitle, side = 2, line = 5)
   par(op)
   invisible(mp)
 }

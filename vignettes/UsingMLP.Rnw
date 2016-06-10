@@ -266,17 +266,18 @@ The most significant gene sets are plotted above the smooth curve.
 \clearpage
 \subsubsection{Bar Plot}
 
-For this type of plot there are 2 extra parameters of interest:
+For this type of plot there are some extra parameters of interest:
 \begin{itemize}
 \item \texttt{nRow} = number of gene sets to include in the graph, default is 20
 \item \texttt{barColors} = vector of colors, default is a shade of grey per bar. The 3 possible shadings correspond to the \% of genes in a gene set tested as compared to the total number of genes, the darker, the bigger the portion of genes tested.
+\item \texttt{ylab} =label for the y-axis
 \end{itemize}
 
 
 <<barplot>>=
   pdf("mlpBarplot.pdf", width = 10, height = 10)
   op <- par(mar = c(30, 10, 6, 2))
-  plot(mlpOut, type = "barplot")
+  plot(mlpOut, type = "barplot", ylab = "-log10(gene set p-value)")
   par(op)
   dev.off()
 @
@@ -295,15 +296,17 @@ For this type of plot there are 2 extra parameters of interest:
 
 As the title indicates, this type of plot is only possible if the \texttt{geneSetSource} 
 was 'GOBP', 'GOMF' or 'GOCC'.
-Also for this type of plot there is one extra parameter:
+Also for this type of plot there is some extra parameters:
 \begin{itemize}
 \item \texttt{nRow} = number of gene sets as basis to create the graph, default is low, i.e. 5. The higher this number, the more populated the graph gets.
+\item \texttt{nCutDescPath} = number of characters at which the pathway
+description should be cut (depends on figure size)
 \end{itemize}
 
 <<GOgraph>>=
   pdf("mlpGOgraph.pdf", width = 8, height = 6)
   op <- par(mar = c(0, 0, 0, 0))
-  plot(mlpOut, type = "GOgraph", nRow = 10)
+  plot(mlpOut, type = "GOgraph", nRow = 10, nCutDescPath = 15)
   par(op)
   dev.off()
 @
