@@ -7,7 +7,7 @@ Author: Nandini Raghavan, Tobias Verbeke, An De Bondt with
     contributions by Javier Cabrera, Dhammika Amaratunga, Tine Casneuf
     and Willem Ligtenberg
 Description: Mean Log P Analysis
-Version: 1.34.0
+Version: 1.35.0
 biocViews: Genetics, Reactome, KEGG
 Date: 2013-02-27
 Depends:
