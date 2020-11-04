@@ -11,8 +11,10 @@
 #' @return the data frame as returned by MLP enriched with an additional column geneSetDescription, providing
 #' a concise description of the gene set
 #' @seealso \link{MLP} 
+#' @importFrom AnnotationDbi Term toTable
 #' @export
 addGeneSetDescription <- function (object, geneSetSource = NULL){
+	
   ### checks
   if (!inherits(object, "MLP")) 
     stop("'object' should be an object of class 'MLP' as produced by the MLP function")
@@ -36,7 +38,14 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
   if (!is.data.frame(geneSetSource)){
     
     if (geneSetSource %in% c("GOBP", "GOMF", "GOCC")) {
-      allGOTerms <- as.list(Term(GOTERM))
+		
+		if(!requireNamespace("GO.db")){
+			stop("Package 'GO.db' should be available ",
+				"to add gene set description from: ", 
+				geneSetSource, ".")
+		}
+
+      allGOTerms <- as.list(Term(GO.db::GOTERM))
       geneSetNames <- rownames(object)
       if (!all(geneSetNames %in% names(allGOTerms))) 
         stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
@@ -44,7 +53,14 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
     }
     
     if (geneSetSource == "KEGG") {
-      allKEGGterms <- as.list(KEGGPATHID2NAME)
+		
+		if(!requireNamespace("KEGG.db")){
+			stop("Package 'KEGG.db' should be available ",
+				"to add gene set description from: ", 
+				geneSetSource, ".")
+		}
+		
+      allKEGGterms <- as.list(KEGG.db::KEGGPATHID2NAME)
       geneSetNames <- gsub("^[[:alpha:]]{3}", "", rownames(object))
       if (!all(geneSetNames %in% names(allKEGGterms))) 
         stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
@@ -53,8 +69,12 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
     
     if (geneSetSource == "REACTOME") {
       
-      require(reactome.db)
-      pathways <- toTable(reactomePATHNAME2ID)
+		if(!requireNamespace("reactome.db")){
+			stop("Package 'reactome.db' should be available ",
+				"to add gene set description from: ", 
+				geneSetSource, ".")
+		}
+      pathways <- toTable(reactome.db::reactomePATHNAME2ID)
       switch(species, 
           Mouse = {pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", iconv(pathways$path_name)), ]
             pathwaysSelectedSpecies$path_name <- gsub("Mus musculus: ", "", iconv(pathwaysSelectedSpecies$path_name))}, 

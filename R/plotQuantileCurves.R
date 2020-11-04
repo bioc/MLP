@@ -11,6 +11,7 @@
 #' @return no return value; a quantile curve plot is drawn to the current device
 #' @examples pathExampleMLPResult <- system.file("exampleFiles", "exampleMLPResult.rda", package = "MLP")
 #' load(pathExampleMLPResult)
+#' @importFrom graphics plot axis par points text matlines
 #' @noRd
 plotQuantileCurves <- function(x0, y0, hqi, xtp, qi, lqi, sym = TRUE, main = NULL) {
  

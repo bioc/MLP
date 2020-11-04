@@ -4,8 +4,14 @@
 \alias{plotGeneSetSignificance}
 \title{Plot the Significance for the Genes of a Given Gene Set}
 \usage{
-plotGeneSetSignificance(geneSet, geneSetIdentifier, geneStatistic,
-  annotationPackage, barColors = NULL, descriptionInMainTitle = TRUE)
+plotGeneSetSignificance(
+  geneSet,
+  geneSetIdentifier,
+  geneStatistic,
+  annotationPackage,
+  barColors = NULL,
+  descriptionInMainTitle = TRUE
+)
 }
 \arguments{
 \item{geneSet}{object of class 'geneSetMLP' as produced by function getGeneSets}
@@ -53,4 +59,3 @@ plotGeneSetSignificance(
 )
 par(op)
 }
-

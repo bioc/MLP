@@ -75,11 +75,16 @@ based on Entrez Gene probeset definitions
 
 \subsection{Preliminaries}
 
+<<loadRequiredPackages>>=
+require(MLP)
+require(limma)
+library(AnnotationDbi)
+@
+
 Load the needed libraries and the preprocessed data.
 
 <<loadData>>=
-  require(MLP)
-  require(limma)
+  
   pathExampleData <- system.file("exampleFiles", "expressionSetGcrma.rda", package = "MLP")
   load(pathExampleData)
   # if (!require(mouse4302mmentrezg.db))

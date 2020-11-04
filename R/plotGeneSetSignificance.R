@@ -32,6 +32,7 @@
 #'     annotationPackage = annotationPackage
 #' )
 #' par(op)
+#' @importFrom graphics barplot
 #' @export
 plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, annotationPackage, barColors = NULL, descriptionInMainTitle = TRUE){
   
@@ -47,9 +48,8 @@ plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, a
   if (!is.null(barColors) && is.null(names(barColors)))
     stop("'colorBars' should be a named vector of the same length as 'geneStatistic'")
   
-  
-  require(annotate)
-  require(paste(annotationPackage, ".db", sep = ""), character.only = TRUE)
+  requireNamespace("annotate")
+  requireNamespace(paste(annotationPackage, ".db", sep = ""))
   
   descriptions <- attr(geneSet, "descriptions")
   
@@ -65,8 +65,8 @@ plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, a
   barColors <- if (is.null(barColors)) "grey50" else barColors[names(genePValues)]
   
   names(genePValues) <- paste(
-      unlist(lookUp(psids, annotationPackage, "SYMBOL")),
-      unlist(lookUp(psids, annotationPackage, "GENENAME")),
+      unlist(annotate::lookUp(psids, annotationPackage, "SYMBOL")),
+      unlist(annotate::lookUp(psids, annotationPackage, "GENENAME")),
       sep = ":")
   names(genePValues) <- substr(names(genePValues), 1, 60)
   

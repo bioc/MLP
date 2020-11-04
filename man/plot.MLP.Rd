@@ -4,8 +4,7 @@
 \alias{plot.MLP}
 \title{Plot the Results of an MLP Run}
 \usage{
-\method{plot}{MLP}(x, y = NULL, type = c("barplot", "GOgraph",
-  "quantileCurves"), ...)
+\method{plot}{MLP}(x, y = NULL, type = c("barplot", "GOgraph", "quantileCurves"), ...)
 }
 \arguments{
 \item{x}{object of class 'MLP'}
@@ -34,4 +33,3 @@ if (require(GO.db) && require(Rgraphviz)){
   plot(exampleMLPResult, type = "GOgraph")
 }
 }
-

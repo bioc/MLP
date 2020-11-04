@@ -29,8 +29,8 @@ mlpStatistic <- function(geneSetPValues){
 
 #' Calculate all unique permutations for 1:n, with k = 2 in each group
 #'   (e.g. wild-type vs. knock-out) ; used for column permutations only
-#' @param n TODO
-#' @param k TODO
+#' @param n integer, number of samples
+#' @param k integer, number of elements in each group
 #' @noRd
 permtwo <- function (n, k) 
 {
@@ -55,7 +55,7 @@ permtwo <- function (n, k)
 
 #' Calculate all permutations
 #' (used for column permutations)
-#' @param gr TODO
+#' @param gr integer vector with group
 #' @noRd
 permk <- function(gr) 
 {
@@ -204,6 +204,7 @@ getSmoothedPValues <- function(observedGeneSetStats, permutationGeneSetStats, q.
 #'   quantile curves
 #' @return matrix with the y0 values in the first column, the quantiles at x0 (as many columns as is specified in lqi and hqi) 
 #'   and the x0 values in the last column
+#' @importFrom stats quantile predict smooth.spline
 #' @noRd
 quantileCurves <- function(x, y, x0 = x, y0 = y, type = c("none", "dec", "inc"), m = 20, lqi = 0.05, hqi = 0.95,
     sym = FALSE, flag = FALSE, df = 15, logtran = FALSE) {
@@ -316,6 +317,7 @@ quantileCurves <- function(x, y, x0 = x, y0 = y, type = c("none", "dec", "inc"),
 #' @param decreasing logical; if TRUE, specifies the curve to be non-increasing, if FALSE specifies the
 #'   curve to be non-decreasing
 #' @return vector of y values with the monotonicity constraint imposed
+#' @importFrom stats approx
 #' @noRd
 smdecreasing1 <- function(z, w, decreasing = TRUE) {
   

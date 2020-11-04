@@ -1,3 +1,6 @@
+1.39.1
+  o use Imports rather than Depends
+  o use Authors@R
 1.21.1
 	o mlpBarplot: add ylab, cex, use title instead of mtext to set title
 	o plotGOgraph: add nCutDescPath, replace '\\\n' by \n', add error when graphs without edges

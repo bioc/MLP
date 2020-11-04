@@ -29,4 +29,3 @@ a column to the return value of the MLP function (data frame)
 \seealso{
 \link{MLP}
 }
-

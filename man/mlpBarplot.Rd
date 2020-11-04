@@ -4,8 +4,14 @@
 \alias{mlpBarplot}
 \title{Draw a Barplot for MLP Results}
 \usage{
-mlpBarplot(object, nRow = 20, barColors = NULL, main = NULL, ylab = "",
-  cex = 1)
+mlpBarplot(
+  object,
+  nRow = 20,
+  barColors = NULL,
+  main = NULL,
+  ylab = "",
+  cex = 1
+)
 }
 \arguments{
 \item{object}{object of class MLP}
@@ -43,4 +49,3 @@ par(op)
 \seealso{
 barplot
 }
-

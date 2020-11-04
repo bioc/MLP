@@ -4,7 +4,6 @@
 #' @param type character of length one; one of 'barplot', 'GOgraph' or 'quantileCurves'
 #' @param ... further arguments for the plot functions for each type 
 #' @return for type = "barplot", the midpoints of the barplot 
-#' @S3method plot MLP
 #' @method plot MLP
 #' @examples pathExampleMLPResult <- system.file("exampleFiles", "exampleMLPResult.rda", package = "MLP")
 #' load(pathExampleMLPResult)

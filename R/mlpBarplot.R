@@ -19,6 +19,7 @@
 #' op <- par(mar = c(30, 10, 6, 2))
 #' mlpBarplot(exampleMLPResult)
 #' par(op)
+#' @importFrom graphics par barplot title
 #' @export
 mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL,
 	ylab = "", cex = 1) {

@@ -3,14 +3,21 @@ Maintainer: Tobias Verbeke <tobias.verbeke@openanalytics.eu>
 License: GPL-3
 Title: MLP
 Type: Package
-Author: Nandini Raghavan, Tobias Verbeke, An De Bondt with
-    contributions by Javier Cabrera, Dhammika Amaratunga, Tine Casneuf
-    and Willem Ligtenberg
+Authors@R: c(
+  person(given = "Nandini", family = "Raghavan", role = "aut"),
+  person(given = "Tobias", family = "Verbeke", role = "aut", email = "tobias.verbeke@openanalytics.eu"),
+  person(given = "An", family = "De Bondt", role = "aut"),
+  person(given = "Javier", family = "Cabrera", role = "ctb"),
+  person(given = "Dhammika", family = "Amaratunga", role = "ctb"),
+  person(given = "Tine", family = "Casneuf", role = "ctb"),
+  person(given = "Willem", family = "Ligtenberg", role = "ctb"),
+  person(given = "Laure", family = "Cougnaud", role = "cre", email = "laure.cougnaud@openanalytics.eu")
+ )
 Description: Mean Log P Analysis
-Version: 1.39.0
+Version: 1.39.1
 biocViews: Genetics, Reactome, KEGG
-Date: 2013-02-27
-Depends:
+Date: 2020-11-04
+Imports:
     AnnotationDbi,
     affy,
     plotrix,
@@ -41,4 +48,4 @@ Collate:
     'plot.MLP.R'
     'plotQuantileCurves.R'
     'utils.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 7.1.1

@@ -7,10 +7,18 @@ of the gene p values or column permutations of the expression matrix; the p valu
 can be obtained either as individual gene set p values or p values based on smoothing
 across gene sets of similar size.}
 \usage{
-MLP(geneSet, geneStatistic, minGenes = 5, maxGenes = 100,
-  rowPermutations = TRUE, nPermutations = 100, smoothPValues = TRUE,
+MLP(
+  geneSet,
+  geneStatistic,
+  minGenes = 5,
+  maxGenes = 100,
+  rowPermutations = TRUE,
+  nPermutations = 100,
+  smoothPValues = TRUE,
   probabilityVector = c(0.5, 0.9, 0.95, 0.99, 0.999, 0.9999, 0.99999),
-  df = 9, addGeneSetDescription = TRUE)
+  df = 9,
+  addGeneSetDescription = TRUE
+)
 }
 \arguments{
 \item{geneSet}{is the input list of gene sets (components) and gene IDs (character vectors). 
@@ -71,4 +79,3 @@ if (require(GO.db)){
 Raghavan, Nandini et al. (2007). The high-level similarity of some disparate gene expression measures,
 Bioinformatics, 23, 22, 3032-3038.
 }
-

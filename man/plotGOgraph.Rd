@@ -29,4 +29,3 @@ if (require(GO.db) && require(Rgraphviz)){
   plotGOgraph(exampleMLPResult, main = "GO Graph")
 }
 }
-

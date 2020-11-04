@@ -13,7 +13,6 @@
 #' @param entrezIdentifiers Entrez Gene identifiers used to subset the relevant gene set
 #' @return object of class geneSetMLP which is essentially a named list of pathway categories. 
 #' Each list component contains a vector of Entrez Gene identifiers related to that particular pathway
-#' @import AnnotationDbi
 #' @examples if (require(GO.db) && require(org.Mm.eg.db)){
 #'   pathExampleData <- system.file("exampleFiles", "expressionSetGcrma.rda", package = "MLP")
 #'   pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
@@ -22,6 +21,7 @@
 #'   geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues)[1:2000])
 #'   head(geneSet)
 #' }
+#' @importFrom AnnotationDbi Term toTable
 #' @export
 getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifiers){
   descriptions = "blah"
@@ -43,40 +43,54 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
   ### character
   if (is.character(geneSetSource)) {
     if (geneSetSource %in% c("GOBP", "GOMF", "GOCC")) {
-      require(GO.db)
-      ontology <- sub("GO", "", geneSetSource)
+		
+		if(!requireNamespace("GO.db")){
+			stop("Package 'GO.db' should be available ",
+				"for the extraction of pathways from: ", 
+				geneSetSource, ".")
+		}
+		
       switch(species, Mouse = {
-            require(org.Mm.eg.db)
-            geneSetToEntrez <- as.list(org.Mm.egGO2ALLEGS)
+			requireNamespace("org.Mm.eg.db")
+            geneSetToEntrez <- as.list(org.Mm.eg.db::org.Mm.egGO2ALLEGS)
           }, Human = {
-            require(org.Hs.eg.db)
-            geneSetToEntrez <- as.list(org.Hs.egGO2ALLEGS)
+			requireNamespace("org.Hs.eg.db")
+            geneSetToEntrez <- as.list(org.Hs.eg.db::org.Hs.egGO2ALLEGS)
           }, Rat = {
-            require(org.Rn.eg.db)
-            geneSetToEntrez <- as.list(org.Rn.egGO2ALLEGS)
+			requireNamespace("org.Rn.eg.db")
+            geneSetToEntrez <- as.list(org.Rn.eg.db::org.Rn.egGO2ALLEGS)
           }, Dog = {
-            require(org.Cf.eg.db)
-            geneSetToEntrez <- as.list(org.Cf.egGO2ALLEGS)
+			requireNamespace("org.Cf.eg.db")
+            geneSetToEntrez <- as.list(org.Cf.eg.db::org.Cf.egGO2ALLEGS)
           })
+  
+ 	  ontology <- sub("GO", "", geneSetSource)
       switch(ontology, BP = {
-            GOs <- names(as.list(GOBPANCESTOR))
+            GOs <- names(as.list(GO.db::GOBPANCESTOR))
           }, MF = {
-            GOs <- names(as.list(GOMFANCESTOR))
+            GOs <- names(as.list(GO.db::GOMFANCESTOR))
           }, CC = {
-            GOs <- names(as.list(GOCCANCESTOR))
+            GOs <- names(as.list(GO.db::GOCCANCESTOR))
           })
+  
       go <- geneSetToEntrez[names(geneSetToEntrez) %in% 
               GOs]
       geneSets <- lapply(go, unique)
       anyGenesInGeneSet <- ifelse(unlist(lapply(geneSets, 
                   length)) > 0, TRUE, FALSE)
       geneSets <- geneSets[anyGenesInGeneSet]
-      goterms <- Term(GOTERM)
+      goterms <- Term(GO.db::GOTERM)
       descriptions <- goterms[names(geneSets)]
     }
     if (geneSetSource == "KEGG") {
-      require(KEGG.db)
-      geneSetToEntrez <- as.list(KEGGPATHID2EXTID)
+		
+		if(!requireNamespace("KEGG.db")){
+			stop("Package 'KEGG.db' should be available ",
+				"for the extraction of pathways from: ", 
+				geneSetSource, ".")
+		}
+		
+      geneSetToEntrez <- as.list(KEGG.db::KEGGPATHID2EXTID)
       switch(species, 
           Mouse = {
             prefix <- "mmu"
@@ -91,26 +105,31 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
             prefix <- "cfa"
           })
       geneSets <- geneSetToEntrez[grep(prefix, names(geneSetToEntrez))]
-      descriptions <- unlist(mget(sub("\\D+?(\\d+)", "\\1", names(geneSetToEntrez)), KEGGPATHID2NAME))
+      descriptions <- unlist(mget(sub("\\D+?(\\d+)", "\\1", names(geneSetToEntrez)), KEGG.db::KEGGPATHID2NAME))
       names(descriptions) <- paste(prefix, names(descriptions), sep = "")
     }
     if (geneSetSource == "REACTOME") {
-      require(reactome.db)
-      pathways <- toTable(reactomePATHNAME2ID)
-      allReactomeIDs <- ls(reactomePATHID2EXTID)
+		
+		if(!requireNamespace("reactome.db")){
+			stop("Package 'reactome.db' should be available ",
+					"for the extraction of pathways from: ", 
+					geneSetSource, ".")
+		}
+      pathways <- toTable(reactome.db::reactomePATHNAME2ID)
+      allReactomeIDs <- ls(reactome.db::reactomePATHID2EXTID)
       switch(species, Mouse = {
             pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", iconv(pathways$path_name)), ]
             #Neem eerst de reactomeids met een mapping beperk deze vervolgens met de geselecteerde species.
-            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactome.db::reactomePATHID2EXTID)
           }, Human = {
             pathwaysSelectedSpecies <- pathways[grep("Homo sapiens: ", iconv(pathways$path_name)), ]
-            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactome.db::reactomePATHID2EXTID)
           }, Rat = {
             pathwaysSelectedSpecies <- pathways[grep("Rattus norvegicus: ", iconv(pathways$path_name)), ]
-            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactome.db::reactomePATHID2EXTID)
           }, Dog = {
             pathwaysSelectedSpecies <- pathways[grep("Canis familiaris: ", iconv(pathways$path_name)), ]
-            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactomePATHID2EXTID)
+            geneSets <- mget(pathwaysSelectedSpecies$reactome_id[pathwaysSelectedSpecies$reactome_id %in% allReactomeIDs], reactome.db::reactomePATHID2EXTID)
           })
       descriptions <- pathwaysSelectedSpecies$path_name
       names(descriptions) <- pathwaysSelectedSpecies$reactome_id

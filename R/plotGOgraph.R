@@ -10,6 +10,8 @@
 #'   load(pathExampleMLPResult)
 #'   plotGOgraph(exampleMLPResult, main = "GO Graph")
 #' }
+#' @importFrom graphics legend
+#' @importFrom utils getFromNamespace
 #' @export
 plotGOgraph <- function (object, nRow = 5, main = NULL, 
 	nCutDescPath = 30) {
@@ -21,23 +23,22 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
 
   main <- if (is.null(main)) "Go graph" else main
 
-  require(GO.db)
-  require(Rgraphviz)
-  require(gplots)
-  require(gmodels)
-  require(gdata)
-  require(gtools)
-  require(GOstats)
-  require(annotate)
+  requireNamespace("GO.db")
+  requireNamespace("Rgraphviz")
+  requireNamespace("GOstats")
+  requireNamespace("annotate")
 
-  goids <- rownames(object)[1:nRow]
+  goids <- rownames(object)[seq.int(nRow)]
   ontology <- sub("GO", "", attributes(object)$geneSetSource)
-  basicGraph <- GOGraph(goids, get(paste("GO", ontology, "PARENTS",
-              sep = "")))
+  graphEnv <- getFromNamespace(x = paste("GO", ontology, "PARENTS", sep = ""), ns = "GO.db")
+  basicGraph <- GOstats::GOGraph(
+		x = goids, 
+		dataenv = graphEnv
+	)
   basicGraph <- removeNode("all", basicGraph)
   basicGraph <- removeNode(setdiff(nodes(basicGraph), rownames(object)),
       basicGraph)
-  basicGraph <- layoutGraph(basicGraph)
+  basicGraph <- Rgraphviz::layoutGraph(basicGraph)
   pvalues <- object[nodes(basicGraph), "geneSetPValue"]
   names(pvalues) <- nodes(basicGraph)
   pvalues <- pvalues[!is.na(pvalues)]
@@ -45,7 +46,7 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
   scores <- -log10(pvalues)
   scores[scores <= 0.1] <- 0.1
   nColors <- round(max(scores) * 10)
-  gocolors <- colorpanel(nColors, low = "lightyellow", high = "olivedrab")
+  gocolors <- gplots::colorpanel(nColors, low = "lightyellow", high = "olivedrab")
   nodeFillColor <- rep("white", length(nodes(basicGraph)))
   names(nodeFillColor) <- nodes(basicGraph)
   nodeFillColor[names(scores)] <- gocolors[trunc(scores * 10)]
@@ -61,7 +62,7 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
   counts <- apply(allcounts, 1, function(x) {
         paste(x[1], x[2], sep = " - ")
       })
-  terms <- getGOTerm(nodes(basicGraph))
+  terms <- annotate::getGOTerm(nodes(basicGraph))
   goTerm <- terms[[1]]
   goTerm <- sapply(goTerm, function(x) {
        paste(
@@ -84,7 +85,7 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
   #Error in text.default(labelX, labelY, label, col = textCol, cex = cex *  :  no coordinates were supplied
   if(length(unlist(edges(basicGraph))) > 0){
 	  
-	  renderGraph(basicGraph)
+	  Rgraphviz::renderGraph(basicGraph)
 	  legend("right", "bottom", legend = paste(c(" least", 
 	              " medium", " most"), " (scores ", round(max(scores)) *
 	              c(2, 5, 8)/10, ")", sep = ""), fill = gocolors[round(max(scores)) *
