@@ -54,17 +54,38 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
     
     if (geneSetSource == "KEGG") {
 		
-		if(!requireNamespace("KEGG.db")){
-			stop("Package 'KEGG.db' should be available ",
+		if(!requireNamespace("KEGGREST")){
+			stop("Package 'KEGGREST' should be available ",
 				"to add gene set description from: ", 
 				geneSetSource, ".")
 		}
 		
-      allKEGGterms <- as.list(KEGG.db::KEGGPATHID2NAME)
-      geneSetNames <- gsub("^[[:alpha:]]{3}", "", rownames(object))
-      if (!all(geneSetNames %in% names(allKEGGterms))) 
-        stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-      returnValue <- data.frame(object, geneSetDescription = unlist(allKEGGterms[geneSetNames]), stringsAsFactors = FALSE)
+		keggPathways <- rownames(object)
+		idxPathways <- unique(c(seq(from = 1, to = length(keggPathways), by = 10), length(keggPathways)+1))
+		# extraction limited to 100 pathways at once?
+		geneSetNames <- lapply(head(seq_along(idxPathways), -1), function(i){
+			idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)	  
+			KEGGREST::keggList(keggPathways[idxPathSel])
+		})
+		geneSetNames <- do.call(c, geneSetNames)
+		names(geneSetNames) <- sub("path:", "", names(geneSetNames), fixed = TRUE)
+		org <- KEGGREST::keggList("organism")
+		prefix <- switch(species, 
+			Mouse = "mmu",
+			Human = "hsa", 
+			Rat = "rno", 
+			Dog = "cfa"
+		)
+		idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
+		keggSpecie <- org[idxOrg, which(colnames(org) == "species")]
+		geneSetNames <- sub(paste(" -", keggSpecie), "", geneSetNames, fixed = TRUE)
+		
+		returnValue <- data.frame(
+			object, 
+			geneSetDescription = geneSetNames[rownames(object)], 
+			stringsAsFactors = FALSE
+		)
+		
     }
     
     if (geneSetSource == "REACTOME") {

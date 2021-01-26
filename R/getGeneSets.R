@@ -101,7 +101,7 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
 	  # extract all info for these pathways
 	  # is there a more efficient way to only query the gene IDs?
 	  # keggGet only gets info for 10 pathways maximum
-	  idxPathways <- c(seq(from = 1, to = length(keggPathways), by = 10), length(keggPathways))
+	  idxPathways <- c(seq(from = 1, to = length(keggPathways), by = 10), length(keggPathways)+1)
 	  keggDbList <- lapply(head(seq_along(idxPathways), -1), function(i){
 		 idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)	  
 		 keggDbSel <- KEGGREST::keggGet(dbentries = names(keggPathways)[idxPathSel])
