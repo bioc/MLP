@@ -65,8 +65,8 @@ plotGeneSetSignificance <- function(geneSet, geneSetIdentifier, geneStatistic, a
   barColors <- if (is.null(barColors)) "grey50" else barColors[names(genePValues)]
   
   names(genePValues) <- paste(
-      unlist(annotate::lookUp(psids, annotationPackage, "SYMBOL")),
-      unlist(annotate::lookUp(psids, annotationPackage, "GENENAME")),
+      unlist(annotate::lookUp(psids, annotationPackage, "SYMBOL", load = TRUE)),
+      unlist(annotate::lookUp(psids, annotationPackage, "GENENAME", load = TRUE)),
       sep = ":")
   names(genePValues) <- substr(names(genePValues), 1, 60)
   

@@ -353,7 +353,7 @@ plotGeneSetSignificance(
 		geneSet = geneSet, 
 		geneSetIdentifier = geneSetID, 
 		geneStatistic = pvalues, 
-		annotationPackage = annotation(expressionSetGcrma),
+		annotationPackage = annotation(expressionSetGcrma)
 )
 par(op)
 dev.off()	
