@@ -26,6 +26,9 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
   requireNamespace("GO.db")
   requireNamespace("Rgraphviz")
   requireNamespace("GOstats")
+  # GOstats depends on graph, so fct in graph not imported
+  # when GOstats is imported with 'Imports'
+  requireNamespace("graph")
   requireNamespace("annotate")
 
   goids <- rownames(object)[seq.int(nRow)]
@@ -35,22 +38,23 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
 		x = goids, 
 		dataenv = graphEnv
 	)
-  basicGraph <- removeNode("all", basicGraph)
-  basicGraph <- removeNode(setdiff(nodes(basicGraph), rownames(object)),
+  basicGraph <- graph::removeNode("all", basicGraph)
+  basicGraph <- graph::removeNode(
+		setdiff(graph::nodes(basicGraph), rownames(object)),
       basicGraph)
   basicGraph <- Rgraphviz::layoutGraph(basicGraph)
-  pvalues <- object[nodes(basicGraph), "geneSetPValue"]
-  names(pvalues) <- nodes(basicGraph)
+  pvalues <- object[graph::nodes(basicGraph), "geneSetPValue"]
+  names(pvalues) <- graph::nodes(basicGraph)
   pvalues <- pvalues[!is.na(pvalues)]
   pvalues[pvalues == 0] <- min(pvalues[pvalues != 0])/10
   scores <- -log10(pvalues)
   scores[scores <= 0.1] <- 0.1
   nColors <- round(max(scores) * 10)
   gocolors <- gplots::colorpanel(nColors, low = "lightyellow", high = "olivedrab")
-  nodeFillColor <- rep("white", length(nodes(basicGraph)))
-  names(nodeFillColor) <- nodes(basicGraph)
+  nodeFillColor <- rep("white", length(graph::nodes(basicGraph)))
+  names(nodeFillColor) <- graph::nodes(basicGraph)
   nodeFillColor[names(scores)] <- gocolors[trunc(scores * 10)]
-  nodeRenderInfo(basicGraph) <- list(fill = nodeFillColor)
+  graph::nodeRenderInfo(basicGraph) <- list(fill = nodeFillColor)
   inbin <- object$totalGeneSetSize
   names(inbin) <- rownames(object)
   onchip <- object$testedGeneSetSize
@@ -62,7 +66,7 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
   counts <- apply(allcounts, 1, function(x) {
         paste(x[1], x[2], sep = " - ")
       })
-  terms <- annotate::getGOTerm(nodes(basicGraph))
+  terms <- annotate::getGOTerm(graph::nodes(basicGraph))
   goTerm <- terms[[1]]
   goTerm <- sapply(goTerm, function(x) {
        paste(
@@ -70,20 +74,20 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
 		substr(x, start =  nCutDescPath+1, stop = nCutDescPath*2), 
 		sep = "\n")
       })
-  nodeLabel <- paste(nodes(basicGraph), goTerm[nodes(basicGraph)],
-      counts[nodes(basicGraph)], sep = "\n")
-  names(nodeLabel) <- nodes(basicGraph)
-  nodeRenderInfo(basicGraph) <- list(label = nodeLabel)
-  edgeRenderInfo(basicGraph)$arrowhead <- "none"
-  nodeRenderInfo(basicGraph) <- list(shape = "ellipse")
-  nodeRenderInfo(basicGraph) <- list(cex = 0.5)
-  nodeRenderInfo(basicGraph) <- list(lWidth = 60)
-  nodeRenderInfo(basicGraph) <- list(labelJust = "c")
-  graphRenderInfo(basicGraph)$main <- main
+  nodeLabel <- paste(graph::nodes(basicGraph), goTerm[graph::nodes(basicGraph)],
+      counts[graph::nodes(basicGraph)], sep = "\n")
+  names(nodeLabel) <- graph::nodes(basicGraph)
+  graph::nodeRenderInfo(basicGraph) <- list(label = nodeLabel)
+  graph::edgeRenderInfo(basicGraph)$arrowhead <- "none"
+  graph::nodeRenderInfo(basicGraph) <- list(shape = "ellipse")
+  graph::nodeRenderInfo(basicGraph) <- list(cex = 0.5)
+  graph::nodeRenderInfo(basicGraph) <- list(lWidth = 60)
+  graph::nodeRenderInfo(basicGraph) <- list(labelJust = "c")
+  graph::graphRenderInfo(basicGraph)$main <- main
   
   # if graph without edge, renderGraph returns error:
   #Error in text.default(labelX, labelY, label, col = textCol, cex = cex *  :  no coordinates were supplied
-  if(length(unlist(edges(basicGraph))) > 0){
+  if(length(unlist(graph::edges(basicGraph))) > 0){
 	  
 	  Rgraphviz::renderGraph(basicGraph)
 	  legend("right", "bottom", legend = paste(c(" least", 
