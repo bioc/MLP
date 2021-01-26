@@ -29,11 +29,9 @@ to serve as geneSet argument for the MLP function
 }
 \examples{
 if (require(GO.db) && require(org.Mm.eg.db)){
-  pathExampleData <- system.file("exampleFiles", "expressionSetGcrma.rda", package = "MLP")
   pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
-  load(pathExampleData)
   load(pathExamplePValues)
   geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues)[1:2000])
-  head(geneSet)
+	 geneSet <- getGeneSets(species = "Mouse", geneSetSource = "KEGG", entrezIdentifiers = names(examplePValues)[1:2000])
 }
 }

@@ -16,7 +16,7 @@ Authors@R: c(
 Description: Mean Log P Analysis
 Version: 1.39.1
 biocViews: Genetics, Reactome, KEGG
-Date: 2020-11-04
+Date: 2021-01-26
 Imports:
     AnnotationDbi,
     affy,
@@ -31,7 +31,7 @@ Suggests:
     org.Mm.eg.db,
     org.Rn.eg.db,
     org.Cf.eg.db,
-    KEGG.db,
+    KEGGREST,
     annotate,
     Rgraphviz,
     GOstats,

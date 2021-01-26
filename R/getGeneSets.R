@@ -14,12 +14,10 @@
 #' @return object of class geneSetMLP which is essentially a named list of pathway categories. 
 #' Each list component contains a vector of Entrez Gene identifiers related to that particular pathway
 #' @examples if (require(GO.db) && require(org.Mm.eg.db)){
-#'   pathExampleData <- system.file("exampleFiles", "expressionSetGcrma.rda", package = "MLP")
 #'   pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
-#'   load(pathExampleData)
 #'   load(pathExamplePValues)
 #'   geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues)[1:2000])
-#'   head(geneSet)
+#' 	 geneSet <- getGeneSets(species = "Mouse", geneSetSource = "KEGG", entrezIdentifiers = names(examplePValues)[1:2000])
 #' }
 #' @importFrom AnnotationDbi Term toTable
 #' @export
@@ -84,29 +82,48 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
     }
     if (geneSetSource == "KEGG") {
 		
-		if(!requireNamespace("KEGG.db")){
-			stop("Package 'KEGG.db' should be available ",
+		if(!requireNamespace("KEGGREST")){
+			stop("Package 'KEGGREST' should be available ",
 				"for the extraction of pathways from: ", 
 				geneSetSource, ".")
 		}
 		
-      geneSetToEntrez <- as.list(KEGG.db::KEGGPATHID2EXTID)
-      switch(species, 
-          Mouse = {
-            prefix <- "mmu"
-          },
-          Human = {
-            prefix <- "hsa"
-          }, 
-          Rat = {
-            prefix <- "rno"
-          }, 
-          Dog = {
-            prefix <- "cfa"
-          })
-      geneSets <- geneSetToEntrez[grep(prefix, names(geneSetToEntrez))]
-      descriptions <- unlist(mget(sub("\\D+?(\\d+)", "\\1", names(geneSetToEntrez)), KEGG.db::KEGGPATHID2NAME))
-      names(descriptions) <- paste(prefix, names(descriptions), sep = "")
+	  prefix <- switch(species, 
+          Mouse = "mmu",
+		  Human = "hsa", 
+          Rat = "rno", 
+          Dog = "cfa"
+      )
+	  
+	  # extract pathway IDs
+  	  keggPathways <- KEGGREST::keggList(database = "pathway", organism = prefix)
+	  
+	  # extract all info for these pathways
+	  # is there a more efficient way to only query the gene IDs?
+	  # keggGet only gets info for 10 pathways maximum
+	  idxPathways <- c(seq(from = 1, to = length(keggPathways), by = 10), length(keggPathways))
+	  keggDbList <- lapply(head(seq_along(idxPathways), -1), function(i){
+		 idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)	  
+		 keggDbSel <- KEGGREST::keggGet(dbentries = names(keggPathways)[idxPathSel])
+		 lapply(keggDbSel, "[", c("ENTRY", "NAME", "GENE"))
+	  })
+	  keggDb <- do.call(c, keggDbList)
+  
+	  # extract gene IDs for each pathway
+	  # 'GENE' includes gene ID and description -> retain IDs only
+      geneSets <- lapply(keggDb, function(x) grep("^\\d+$", x$GENE, value = TRUE))
+	  
+	  # extract pathway name
+	  descriptions <- sapply(keggDb, "[[", "NAME")
+	  # remove specie name in description:
+	  org <- keggList("organism")
+	  idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
+	  keggSpecie <- org[idxOrg, which(colnames(org) == "species")]
+	  descriptions <- sub(paste(" -", keggSpecie), "", descriptions, fixed = TRUE)
+	  
+	  # extract pathway IDs
+	  names(geneSets) <- names(descriptions) <- sapply(keggDb, "[[", "ENTRY")
+	  
     }
     if (geneSetSource == "REACTOME") {
 		
@@ -166,6 +183,8 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
         sum(geneSet %in% entrezIdentifiers) > 0
       })
   geneSets <- geneSets[tfidx]
+  descriptions <- descriptions[names(geneSets)]
+  
   attr(geneSets, "species") <- species
   attr(geneSets, "geneSetSource") <- geneSetSource
   attr(geneSets, "descriptions") <- descriptions

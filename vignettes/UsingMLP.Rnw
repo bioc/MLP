@@ -87,8 +87,6 @@ Load the needed libraries and the preprocessed data.
   
   pathExampleData <- system.file("exampleFiles", "expressionSetGcrma.rda", package = "MLP")
   load(pathExampleData)
-  # if (!require(mouse4302mmentrezg.db))
-  #  annotation(expressionSetGcrma) <- "mouse4302"
   annotation(expressionSetGcrma) <- "mouse4302"
 @  
 
