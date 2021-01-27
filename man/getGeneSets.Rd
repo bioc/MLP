@@ -20,8 +20,18 @@ are of type character.}
 \item{entrezIdentifiers}{Entrez Gene identifiers used to subset the relevant gene set}
 }
 \value{
-object of class geneSetMLP which is essentially a named list of pathway categories. 
-Each list component contains a vector of Entrez Gene identifiers related to that particular pathway
+object of class geneSetMLP which is essentially a named 
+list of pathway categories. \cr
+Each list component is named with the pathway ID and 
+contains a vector of Entrez Gene identifiers 
+related to that particular pathway.\cr
+The object contains additionally the attributes:
+\itemize{
+\item{'species' and 'geneSetSource': }{\code{species} and \code{geneSetSource}
+(as provided as input)}
+\item{'descriptions': }{named character vector with pathway descriptions.
+The vector is named with the pathway ID.}
+}
 }
 \description{
 The return value of the getGeneSets function has as primary use

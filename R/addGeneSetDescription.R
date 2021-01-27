@@ -19,8 +19,10 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
   if (!inherits(object, "MLP")) 
     stop("'object' should be an object of class 'MLP' as produced by the MLP function")
   
-  if (any(names(object) == "geneSetDescription"))
+  if (any(names(object) == "geneSetDescription")){
     warning("The MLP object already contains a column 'geneSetDescription'")
+	object[, "geneSetDescription"] <- NULL
+ }
   
   if (is.null(geneSetSource)) 
     stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
@@ -61,7 +63,7 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
 		}
 		
 		keggPathways <- rownames(object)
-		idxPathways <- unique(c(seq(from = 1, to = length(keggPathways), by = 10), length(keggPathways)+1))
+		idxPathways <- unique(c(seq(from = 1, to = length(keggPathways), by = 100), length(keggPathways)+1))
 		# extraction limited to 100 pathways at once?
 		geneSetNames <- lapply(head(seq_along(idxPathways), -1), function(i){
 			idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)	  
