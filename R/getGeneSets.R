@@ -26,8 +26,8 @@
 #' @examples if (require(GO.db) && require(org.Mm.eg.db)){
 #'   pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
 #'   load(pathExamplePValues)
-#'   geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues)[1:2000])
-#' 	 geneSet <- getGeneSets(species = "Mouse", geneSetSource = "KEGG", entrezIdentifiers = names(examplePValues)[1:2000])
+#'   geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues)[seq_len(2000)])
+#' 	 geneSet <- getGeneSets(species = "Mouse", geneSetSource = "KEGG", entrezIdentifiers = names(examplePValues)[seq_len(2000)])
 #' }
 #' @importFrom utils head
 #' @importFrom AnnotationDbi Term toTable

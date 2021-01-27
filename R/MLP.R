@@ -80,9 +80,9 @@ MLP <- function (geneSet, geneStatistic, minGenes = 5, maxGenes = 100,
   
   if (!rowPermutations) {
     w <- w0[,-2] # take out observed gene set statistics
-    w0 <- w0[, 1:2] # take out gene set statistics for permuted data
+    w0 <- w0[, seq_len(2)] # take out gene set statistics for permuted data
   } else {
-    p1 <- apply(matrix(1:n2, n2, nPermutations), 2, sample)
+    p1 <- apply(matrix(seq_len(n2), n2, nPermutations), 2, sample)
     y1 <- matrix(geneStatistic[p1, 1], n2, nPermutations)
     row.names(y1) <- row.names(geneStatistic)
     rm(p1)

@@ -26,6 +26,17 @@ a concise description of the gene set
 Utility function which adds the biological description of the gene sets as
 a column to the return value of the MLP function (data frame)
 }
+\examples{
+if (require(GO.db)){
+  pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
+  load(pathExamplePValues)
+	 geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues))
+  mlpResult <- MLP(geneSet = geneSet, geneStatistic = examplePValues, addGeneSetDescription = FALSE)
+  head(mlpResult)
+  mlpResultsWithGSDescr <- addGeneSetDescription(object = mlpResult, geneSetSource = "GOBP")
+  head(mlpResultsWithGSDescr)
+}
+}
 \seealso{
 \link{MLP}
 }

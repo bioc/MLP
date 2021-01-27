@@ -41,7 +41,7 @@ mlpBarplot <- function (object, nRow = 20, barColors = NULL, main = NULL,
   if (is.null(barColors)){
     barColors <- rep("grey", length(dat))
     percentTested <- 100*(object$testedGeneSetSize/object$totalGeneSetSize)
-    percentTested <- percentTested[1:length(dat)]
+    percentTested <- percentTested[seq_len(length(dat))]
     
     barColors[percentTested >= 75] <- "grey50"
     barColors[percentTested < 75 & percentTested > 50] <- "grey60"

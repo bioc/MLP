@@ -6,7 +6,7 @@ computeMLP <- function(x){
   x <- as.matrix(x)
   if (ncol(x) > 1){
     retval <- c(nrow(x), colMeans(-log10(data.matrix(x))))
-    names(retval) <- c("n", paste("u", 1:ncol(x), sep = ""))
+    names(retval) <- c("n", paste("u", seq_len(ncol(x)), sep = ""))
   } else {
     retval <- c(length(x), mean(-log10(x)))
     names(retval) <- c("n", "u")
@@ -43,12 +43,12 @@ permtwo <- function (n, k)
     jj <- j == k
     if ((ni <- sum(jj)) > 0) {
       xx <- matrix(0, ni, n)
-      xx[, 1:i] <- x[jj, ]
+      xx[, seq_len(i)] <- x[jj, ]
       y <- rbind(y, xx)
     }
     x <- x[j < k & (j + n - i) >= k, ]
   }
-  t(apply(y, 1, function(x) c((1:length(x))[x == 1], (1:length(x))[x == 
+  t(apply(y, 1, function(x) c((seq_len(length(x)))[x == 1], (seq_len(length(x)))[x == 
                         0])))
 }
 
@@ -67,8 +67,8 @@ permk <- function(gr)
     tt <- ttt
     tt1 <- permtwo(ff[i],ff[i-1])
     ttt <- NULL
-    for(i in ff[i-1]+1:gr[i]) tt <- cbind(tt,i)
-    for(i in 1:nrow(tt1)) ttt <- rbind(ttt,cbind(tt,6,7)[,tt1[i,]])
+    for(i in ff[i-1]+seq_len(gr[i])) tt <- cbind(tt,i)
+    for(i in seq_len(nrow(tt1))) ttt <- rbind(ttt,cbind(tt,6,7)[,tt1[i,]])
   }
   ttt
 }
@@ -119,7 +119,7 @@ pp2g <- function(xp, yp){
   n30 <- length(x30)
   p30 <- vector("character", n30)
   
-  for (j in 1:n30){ 
+  for (j in seq_len(n30)){ 
     # p30[j] <- (min(p1[x3==x30[j],2], na.rm = TRUE) ) # min p-value
     p30[j] <- p1[ p1[, 2] == min(p1[x3==x30[j], 2]), 1][1] # probe-set corr to min p-value
     # need checksum if genes have multiple mins.
@@ -133,8 +133,8 @@ pp2g <- function(xp, yp){
   x40 <- sort(unique(x41)) # multiple probe-sets corr. to gene can cause duplication in x41.
   n40 <- length(x40)  
   jj <- vector("numeric",n40)
-  for (j in 1:n40){
-    jj[j] <- (1:n41)[x41==x40[j]][1]
+  for (j in seq_len(n40)){
+    jj[j] <- (seq_len(n41))[x41==x40[j]][1]
   }
   x <- data.frame(GO.Number=x1[jj],Gene.ID=I(x3[jj]))
   
@@ -334,7 +334,7 @@ smdecreasing1 <- function(z, w, decreasing = TRUE) {
   w1 <- w
   if (any(i)) w1[i] <- approx(x, y, w[i])$y
   if (any(i1)) { 
-    m1 <- lsfit(x[1:20],y[1:20])$coef[2]
+    m1 <- lsfit(x[seq_len(20)],y[seq_len(20)])$coef[2]
     w1[i1] <- approx( c(rw[1],x[1]),c(y[1]-m1*(x[1]-rw[1]),y[1]),w[i1])$y
   }
   if (any(i2)) { 
@@ -353,7 +353,7 @@ csort <- function(x) {
   p  <- ncol(x)
   rx <- range(x)
   z  <- (x - rx[1])/(rx[2]-rx[1])*0.99
-  k <- rep(1:p,rep(n,p))
+  k <- rep(seq_len(p),rep(n,p))
   z  <- x[sort.list(z + k)]
   dim(z) <- dim(x)
   z

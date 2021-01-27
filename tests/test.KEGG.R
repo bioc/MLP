@@ -18,4 +18,5 @@ mlpOut <- MLP(
 ) 	
 
 mlpOutWithGeneSetDescr <- addGeneSetDescription(object = mlpOut, geneSetSource = "KEGG")
+
 	

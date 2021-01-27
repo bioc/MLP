@@ -13,6 +13,16 @@
 #' @seealso \link{MLP} 
 #' @importFrom AnnotationDbi Term toTable
 #' @importFrom utils head
+#' @examples 
+#' if (require(GO.db)){
+#'   pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
+#'   load(pathExamplePValues)
+#' 	 geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues))
+#'   mlpResult <- MLP(geneSet = geneSet, geneStatistic = examplePValues, addGeneSetDescription = FALSE)
+#'   head(mlpResult)
+#'   mlpResultsWithGSDescr <- addGeneSetDescription(object = mlpResult, geneSetSource = "GOBP")
+#'   head(mlpResultsWithGSDescr)
+#' }
 #' @export
 addGeneSetDescription <- function (object, geneSetSource = NULL){
 	
