@@ -256,7 +256,7 @@ The most significant gene sets are plotted above the smooth curve.
 <<quantileCurves>>=
   pdf("mlpQuantileCurves.pdf", width = 10, height = 10)
   plot(mlpOut, type = "quantileCurves")
-  dev.off()
+  tmp <- dev.off()
 @
 
 \begin{figure}[h!]
@@ -282,7 +282,7 @@ For this type of plot there are some extra parameters of interest:
   op <- par(mar = c(30, 10, 6, 2))
   plot(mlpOut, type = "barplot", ylab = "-log10(gene set p-value)")
   par(op)
-  dev.off()
+  tmp <- dev.off()
 @
 
 
@@ -311,7 +311,7 @@ description should be cut (depends on figure size)
   op <- par(mar = c(0, 0, 0, 0))
   plot(mlpOut, type = "GOgraph", nRow = 10, nCutDescPath = 15)
   par(op)
-  dev.off()
+  tmp <- dev.off()
 @
 
 \begin{figure}[h!]
@@ -354,7 +354,7 @@ plotGeneSetSignificance(
 		annotationPackage = annotation(expressionSetGcrma)
 )
 par(op)
-dev.off()	
+tmp <- dev.off()	
 @
 
 \begin{figure}[h!]
@@ -363,7 +363,7 @@ dev.off()
 \caption{Example of a gene significance plot for a gene set of interest. The height of a bar represents the significance (-log10(\texttt{geneStatistic})) of the gene indicated on the x-axis.}
 \end{figure}
 
-
+\newpage
 
 %
 %A second plot is showing the signal intensities across the samples 

@@ -73,7 +73,6 @@ if (require(GO.db)){
   mlpResult <- MLP(geneSet = exampleGeneSet, geneStatistic = examplePValues)
   head(mlpResult)
 }
-
 }
 \references{
 Raghavan, Nandini et al. (2007). The high-level similarity of some disparate gene expression measures,

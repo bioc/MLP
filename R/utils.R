@@ -317,7 +317,7 @@ quantileCurves <- function(x, y, x0 = x, y0 = y, type = c("none", "dec", "inc"),
 #' @param decreasing logical; if TRUE, specifies the curve to be non-increasing, if FALSE specifies the
 #'   curve to be non-decreasing
 #' @return vector of y values with the monotonicity constraint imposed
-#' @importFrom stats approx
+#' @importFrom stats approx lsfit
 #' @noRd
 smdecreasing1 <- function(z, w, decreasing = TRUE) {
   

@@ -29,6 +29,7 @@
 #'   geneSet <- getGeneSets(species = "Mouse", geneSetSource = "GOBP", entrezIdentifiers = names(examplePValues)[1:2000])
 #' 	 geneSet <- getGeneSets(species = "Mouse", geneSetSource = "KEGG", entrezIdentifiers = names(examplePValues)[1:2000])
 #' }
+#' @importFrom utils head
 #' @importFrom AnnotationDbi Term toTable
 #' @export
 getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifiers){

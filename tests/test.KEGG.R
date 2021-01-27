@@ -1,3 +1,4 @@
+library(MLP)
 
 pathPValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")
 load(pathPValues)

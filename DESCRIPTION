@@ -1,7 +1,7 @@
 Package: MLP
 Maintainer: Tobias Verbeke <tobias.verbeke@openanalytics.eu>
 License: GPL-3
-Title: MLP
+Title: Mean Log P Analysis
 Type: Package
 Authors@R: c(
   person(given = "Nandini", family = "Raghavan", role = "aut"),
@@ -13,18 +13,21 @@ Authors@R: c(
   person(given = "Willem", family = "Ligtenberg", role = "ctb"),
   person(given = "Laure", family = "Cougnaud", role = "cre", email = "laure.cougnaud@openanalytics.eu")
  )
-Description: Mean Log P Analysis
+Description: Pathway analysis based on p-values associated 
+  to genes from a genes expression analysis of interest.
+  Utility functions enable to extract pathways from the
+  Gene Ontology Biological Process (GOBP), Molecular Function
+  (GOMF) and Cellular Component (GOCC), Kyoto Encyclopedia of Genes of
+  Genomes (KEGG) and Reactome databases.
+  Methodology, and helper functions to display the results
+  as a table, barplot of pathway significance, Gene Ontology
+  graph and pathway significance are available.
 Version: 1.39.1
 biocViews: Genetics, Reactome, KEGG
 Date: 2021-01-26
 Imports:
     AnnotationDbi,
-    affy,
-    plotrix,
-    gplots,
-    gmodels,
-    gdata,
-    gtools
+    gplots
 Suggests:
     GO.db,
     org.Hs.eg.db,

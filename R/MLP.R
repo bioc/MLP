@@ -38,7 +38,7 @@
 #'   mlpResult <- MLP(geneSet = exampleGeneSet, geneStatistic = examplePValues)
 #'   head(mlpResult)
 #' }
-#' 
+#' @importFrom stats na.omit
 #' @export
 MLP <- function (geneSet, geneStatistic, minGenes = 5, maxGenes = 100, 
     rowPermutations = TRUE, nPermutations = 100, smoothPValues = TRUE, 

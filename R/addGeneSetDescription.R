@@ -12,6 +12,7 @@
 #' a concise description of the gene set
 #' @seealso \link{MLP} 
 #' @importFrom AnnotationDbi Term toTable
+#' @importFrom utils head
 #' @export
 addGeneSetDescription <- function (object, geneSetSource = NULL){
 	

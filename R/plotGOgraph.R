@@ -30,6 +30,7 @@ plotGOgraph <- function (object, nRow = 5, main = NULL,
   # when GOstats is imported with 'Imports'
   requireNamespace("graph")
   requireNamespace("annotate")
+  requireNamespace("gplots")
 
   goids <- rownames(object)[seq.int(nRow)]
   ontology <- sub("GO", "", attributes(object)$geneSetSource)
