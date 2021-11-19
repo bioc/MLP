@@ -47,6 +47,9 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
   
   species <- attr(object, "species")
   
+  if (species == "Rhesus" && geneSetSource == "REACTOME")
+    stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
+  
   ### deal with character vectors
   if (!is.data.frame(geneSetSource)){
     
@@ -87,7 +90,8 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
 			Mouse = "mmu",
 			Human = "hsa", 
 			Rat = "rno", 
-			Dog = "cfa"
+			Dog = "cfa",
+			Rhesus = "mcc"
 		)
 		idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
 		keggSpecie <- org[idxOrg, which(colnames(org) == "species")]

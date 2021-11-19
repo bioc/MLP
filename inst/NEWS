@@ -1,3 +1,5 @@
+1.43.1
+   o getGeneSets: add 'Rhesus' to 'species' (available only for 'GOBP', 'GOMF', 'GOCC' or 'KEGG')
 1.39.1
   o use Imports rather than Depends
   o use Authors@R

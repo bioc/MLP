@@ -8,7 +8,7 @@ getGeneSets(species = "Mouse", geneSetSource = NULL, entrezIdentifiers)
 }
 \arguments{
 \item{species}{character vector of length one indicating the species, one of
-'Mouse', 'Human' or 'Rat'; defaults to 'Mouse'.}
+'Mouse', 'Human', 'Rat', 'Dog' or 'Rhesus'; defaults to 'Mouse'.}
 
 \item{geneSetSource}{source to be used to construct the list of pathway categories; 
 for public data sources, the user can specify a string (one of 'GOBP', 'GOMF', 'GOCC', 'KEGG' or 'REACTOME')
