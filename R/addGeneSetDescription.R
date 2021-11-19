@@ -87,7 +87,8 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
 			Mouse = "mmu",
 			Human = "hsa", 
 			Rat = "rno", 
-			Dog = "cfa"
+			Dog = "cfa",
+			Rhesus = "mcc"
 		)
 		idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
 		keggSpecie <- org[idxOrg, which(colnames(org) == "species")]
@@ -102,6 +103,9 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
     }
     
     if (geneSetSource == "REACTOME") {
+      
+      if (species == "Rhesus")
+        stop("Gene sets from the 'REACTOME' database are not available for the 'Rhesus' species. More info, see help for 'reactome.db'.")
       
 		if(!requireNamespace("reactome.db")){
 			stop("Package 'reactome.db' should be available ",

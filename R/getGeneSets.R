@@ -3,7 +3,7 @@
 #' The return value of the getGeneSets function has as primary use
 #' to serve as geneSet argument for the MLP function
 #' @param species character vector of length one indicating the species, one of
-#' 'Mouse', 'Human' or 'Rat'; defaults to 'Mouse'. 
+#' 'Mouse', 'Human', 'Rat', 'Dog' or 'Rhesus'; defaults to 'Mouse'. 
 #' @param geneSetSource source to be used to construct the list of pathway categories; 
 #' for public data sources, the user can specify a string (one of 'GOBP', 'GOMF', 'GOCC', 'KEGG' or 'REACTOME')
 #' and BioC packages will be used to construct the list of pathway categories; 
@@ -35,15 +35,18 @@
 getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifiers){
   
   ### checks
-  if (!species %in% c("Mouse", "Human", "Rat", "Dog")) 
-    stop("The 'species' argument should be one of 'Mouse', 'Human', 'Rat' or 'Dog')")
-
+  if (!species %in% c("Mouse", "Human", "Rat", "Dog", "Rhesus")) 
+    stop("The 'species' argument should be one of 'Mouse', 'Human', 'Rat', 'Dog' or 'Rhesus'.")
+  
   if (is.null(geneSetSource)) 
     stop("Please provide a source of gene sets. For more info, see the help page.")
   
   if (!is.data.frame(geneSetSource) && length(geneSetSource) != 1 && !(geneSetSource %in% 
         c("GOBP", "GOMF", "GOCC", "KEGG", "REACTOME"))) 
     stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC', 'KEGG', 'REACTOME' or a data.frame.  More info, see help.")
+  
+  if (species == "Rhesus" && geneSetSource == "REACTOME")
+    stop("The 'geneSetSource' argument should be one of 'GOBP', 'GOMF', 'GOCC' or 'KEGG' if 'species' is set to 'Rhesus'.")
   
   if (is.data.frame(geneSetSource) && any(!(c("PATHWAYID", "TAXID", "PATHWAYNAME", "GENEID") %in% colnames(geneSetSource))))
       stop("The geneSetSource as data.frame should have at least the 4 columns 'PATHWAYID', 'TAXID', 'PATHWAYNAME' and 'GENEID'. More info on their content, see help.")
@@ -70,6 +73,9 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
           }, Dog = {
 			requireNamespace("org.Cf.eg.db")
             geneSetToEntrez <- as.list(org.Cf.eg.db::org.Cf.egGO2ALLEGS)
+          }, Rhesus = {
+      requireNamespace("org.Mmu.eg.db")
+            geneSetToEntrez <- as.list(org.Mmu.eg.db::org.Mmu.egGO2ALLEGS)
           })
   
  	  ontology <- sub("GO", "", geneSetSource)
@@ -99,9 +105,10 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
 		
 	  prefix <- switch(species, 
           Mouse = "mmu",
-		  Human = "hsa", 
+		      Human = "hsa", 
           Rat = "rno", 
-          Dog = "cfa"
+          Dog = "cfa",
+		      Rhesus = "mcc"
       )
 	  
 	  # extract pathway IDs
@@ -168,6 +175,8 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
           TAXID <- "10116"
         }, Dog = {
           TAXID <- "9615"
+        }, Rhesus = {
+          TAXID <- "9544"
         })
     if (!(TAXID %in% geneSetSource$TAXID)) 
       stop(paste("Please check the available TAXIDs in your geneSetSource. The geneSetSource object does not contain gene sets for ", 
