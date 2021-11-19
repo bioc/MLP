@@ -47,9 +47,6 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
   
   species <- attr(object, "species")
   
-  if (species == "Rhesus" && geneSetSource == "REACTOME")
-    stop("Please provide the same source of gene sets as provided to the getGeneSets function. More info, see help.")
-  
   ### deal with character vectors
   if (!is.data.frame(geneSetSource)){
     
@@ -106,6 +103,9 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
     }
     
     if (geneSetSource == "REACTOME") {
+      
+      if (species == "Rhesus")
+        stop("Gene sets from the 'REACTOME' database are not available for the 'Rhesus' species. More info, see help for 'reactome.db'.")
       
 		if(!requireNamespace("reactome.db")){
 			stop("Package 'reactome.db' should be available ",
