@@ -23,7 +23,7 @@ Description: Pathway analysis based on p-values associated
   Methodology, and helper functions to display the results
   as a table, barplot of pathway significance, Gene Ontology
   graph and pathway significance are available.
-Version: 1.47.0
+Version: 1.48.0
 biocViews: Genetics, GeneExpression, Pathways, Reactome, KEGG, GO
 Date: 2021-11-19
 Imports:
