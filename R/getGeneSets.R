@@ -17,10 +17,10 @@
 #' related to that particular pathway.\cr
 #' The object contains additionally the attributes:
 #' \itemize{
-#' \item{'species' and 'geneSetSource': }{\code{species} and \code{geneSetSource}
-#' (as provided as input)}
-#' \item{'descriptions': }{named character vector with pathway descriptions.
-#' The vector is named with the pathway ID.}
+#' \item 'species' and 'geneSetSource': \code{species} and \code{geneSetSource}
+#' (as provided as input)
+#' \item 'descriptions': named character vector with pathway descriptions.
+#' The vector is named with the pathway ID.
 #' }
 #' @examples if (require(GO.db) && require(org.Mm.eg.db)){
 #'   pathExamplePValues <- system.file("exampleFiles", "examplePValues.rda", package = "MLP")

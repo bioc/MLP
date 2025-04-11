@@ -1,5 +1,6 @@
 1.55.1
   o addGeneSetDescription: fix issue KEGG
+  o doc: remove description-like items in itemize (R-devel 11/10/2023)
 1.43.1
    o getGeneSets: add 'Rhesus' to 'species' (available only for 'GOBP', 'GOMF', 'GOCC' or 'KEGG')
 1.39.1
