@@ -1,3 +1,5 @@
+1.55.1
+  o addGeneSetDescription: fix issue KEGG
 1.43.1
    o getGeneSets: add 'Rhesus' to 'species' (available only for 'GOBP', 'GOMF', 'GOCC' or 'KEGG')
 1.39.1

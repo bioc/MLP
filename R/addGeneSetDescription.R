@@ -52,54 +52,57 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
     
     if (geneSetSource %in% c("GOBP", "GOMF", "GOCC")) {
 		
-		if(!requireNamespace("GO.db")){
-			stop("Package 'GO.db' should be available ",
-				"to add gene set description from: ", 
-				geneSetSource, ".")
-		}
-
-      allGOTerms <- as.list(Term(GO.db::GOTERM))
-      geneSetNames <- rownames(object)
-      if (!all(geneSetNames %in% names(allGOTerms))) 
-        stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
-      returnValue <- data.frame(object, geneSetDescription = unlist(allGOTerms[geneSetNames]), stringsAsFactors = FALSE)
+    		if(!requireNamespace("GO.db")){
+    			stop("Package 'GO.db' should be available ",
+    				"to add gene set description from: ", 
+    				geneSetSource, ".")
+    		}
+    
+          allGOTerms <- as.list(Term(GO.db::GOTERM))
+          geneSetNames <- rownames(object)
+          if (!all(geneSetNames %in% names(allGOTerms))) 
+            stop("Check the geneSetSource parameter and compare it to the one used in the getGeneSets function, they should be the same!")
+          returnValue <- data.frame(object, geneSetDescription = unlist(allGOTerms[geneSetNames]), stringsAsFactors = FALSE)
+        
     }
     
     if (geneSetSource == "KEGG") {
 		
-		if(!requireNamespace("KEGGREST")){
-			stop("Package 'KEGGREST' should be available ",
-				"to add gene set description from: ", 
-				geneSetSource, ".")
-		}
-		
-		keggPathways <- rownames(object)
-		idxPathways <- unique(c(seq(from = 1, to = length(keggPathways), by = 100), length(keggPathways)+1))
-		# extraction limited to 100 pathways at once?
-		geneSetNames <- lapply(head(seq_along(idxPathways), -1), function(i){
-			idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)	  
-			KEGGREST::keggList(keggPathways[idxPathSel])
-		})
-		geneSetNames <- do.call(c, geneSetNames)
-		names(geneSetNames) <- sub("path:", "", names(geneSetNames), fixed = TRUE)
-		org <- KEGGREST::keggList("organism")
-		prefix <- switch(species, 
-			Mouse = "mmu",
-			Human = "hsa", 
-			Rat = "rno", 
-			Dog = "cfa",
-			Rhesus = "mcc"
-		)
-		idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
-		keggSpecie <- org[idxOrg, which(colnames(org) == "species")]
-		geneSetNames <- sub(paste(" -", keggSpecie), "", geneSetNames, fixed = TRUE)
-		
-		returnValue <- data.frame(
-			object, 
-			geneSetDescription = geneSetNames[rownames(object)], 
-			stringsAsFactors = FALSE
-		)
-		
+    		if(!requireNamespace("KEGGREST")){
+    			stop("Package 'KEGGREST' should be available ",
+    				"to add gene set description from: ", 
+    				geneSetSource, ".")
+    		}
+    
+      prefix <- switch(species, 
+          Mouse = "mmu",
+          Human = "hsa", 
+          Rat = "rno", 
+          Dog = "cfa",
+          Rhesus = "mcc"
+      )
+      
+    		keggPathways <- rownames(object)
+      
+      # extraction limited to 10 pathways at once with keggGet
+    		idxPathways <- unique(c(seq(from = 1, to = length(keggPathways), by = 10), length(keggPathways)+1))
+      keggDbList <- lapply(head(seq_along(idxPathways), -1), function(i){
+    			idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)
+       info <- KEGGREST::keggGet(dbentries = keggPathways[idxPathSel])
+       lapply(info, "[", c("ENTRY", "NAME"))
+    		})
+      keggDbList <- do.call(c, keggDbList)
+      descriptions <- sapply(keggDbList, "[[", "NAME")
+      descriptions <- formatKEGGDescription(
+        descriptions = descriptions, species = species)
+      names(descriptions) <- sapply(keggDbList, "[[", "ENTRY")
+
+    		returnValue <- data.frame(
+    			object, 
+    			geneSetDescription = descriptions[rownames(object)], 
+    			stringsAsFactors = FALSE
+    		)
+    		
     }
     
     if (geneSetSource == "REACTOME") {
@@ -107,11 +110,11 @@ addGeneSetDescription <- function (object, geneSetSource = NULL){
       if (species == "Rhesus")
         stop("Gene sets from the 'REACTOME' database are not available for the 'Rhesus' species. More info, see help for 'reactome.db'.")
       
-		if(!requireNamespace("reactome.db")){
-			stop("Package 'reactome.db' should be available ",
-				"to add gene set description from: ", 
-				geneSetSource, ".")
-		}
+    		if(!requireNamespace("reactome.db")){
+    			stop("Package 'reactome.db' should be available ",
+    				"to add gene set description from: ", 
+    				geneSetSource, ".")
+    		}
       pathways <- toTable(reactome.db::reactomePATHNAME2ID)
       switch(species, 
           Mouse = {pathwaysSelectedSpecies <- pathways[grep("Mus musculus: ", iconv(pathways$path_name)), ]

@@ -380,4 +380,34 @@ ctpval1 <- function(x.ct, q.cutoff) {
   exp(-exp(m + b*log(abs(x.ct[,1]))))
 }
 
+#' Format KEGG descriptions
+#' 
+#' This includes the removal of the species
+#' @param descriptions character vector with descriptions of 
+#' KEGG pathways
+#' @param species character vector of length one indicating the species, one of
+#' 'Mouse', 'Human', 'Rat', 'Dog' or 'Rhesus'; defaults to 'Mouse'. 
+#' @return formatted descriptions
+#' @keywords internal
+formatKEGGDescription <- function(descriptions, species = "Mouse"){
+  
+  requireNamespace("KEGGREST")
+  
+  prefix <- switch(species, 
+      Mouse = "mmu",
+      Human = "hsa", 
+      Rat = "rno", 
+      Dog = "cfa",
+      Rhesus = "mcc"
+  )
+  
+  # remove specie name in description:
+  org <- KEGGREST::keggList("organism")
+  idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
+  keggSpecie <- org[idxOrg, which(colnames(org) == "species")]
+  descriptions <- sub(paste(" -", keggSpecie), "", descriptions, fixed = TRUE)
+  
+  return(descriptions)
+  
+}
 

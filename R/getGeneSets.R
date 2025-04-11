@@ -1,9 +1,7 @@
 #' Prepare Pathway Data for the MLP Function
 #' 
 #' The return value of the getGeneSets function has as primary use
-#' to serve as geneSet argument for the MLP function
-#' @param species character vector of length one indicating the species, one of
-#' 'Mouse', 'Human', 'Rat', 'Dog' or 'Rhesus'; defaults to 'Mouse'. 
+#' to serve as geneSet argument for the MLP function 
 #' @param geneSetSource source to be used to construct the list of pathway categories; 
 #' for public data sources, the user can specify a string (one of 'GOBP', 'GOMF', 'GOCC', 'KEGG' or 'REACTOME')
 #' and BioC packages will be used to construct the list of pathway categories; 
@@ -11,6 +9,7 @@
 #' the following four columns: PATHWAYID, TAXID, PATHWAYNAME and GENEID. It is assumed all columns
 #' are of type character.
 #' @param entrezIdentifiers Entrez Gene identifiers used to subset the relevant gene set
+#' @inheritParams formatKEGGDescription
 #' @return object of class geneSetMLP which is essentially a named 
 #' list of pathway categories. \cr
 #' Each list component is named with the pathway ID and 
@@ -112,31 +111,27 @@ getGeneSets <- function (species = "Mouse", geneSetSource = NULL, entrezIdentifi
       )
 	  
 	  # extract pathway IDs
-  	  keggPathways <- KEGGREST::keggList(database = "pathway", organism = prefix)
+  	keggPathways <- KEGGREST::keggList(database = "pathway", organism = prefix)
 	  
 	  # extract all info for these pathways
 	  # is there a more efficient way to only query the gene IDs?
 	  # keggGet only gets info for 10 pathways maximum
 	  idxPathways <- c(seq(from = 1, to = length(keggPathways), by = 10), length(keggPathways)+1)
 	  keggDbList <- lapply(head(seq_along(idxPathways), -1), function(i){
-		 idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)	  
-		 keggDbSel <- KEGGREST::keggGet(dbentries = names(keggPathways)[idxPathSel])
-		 lapply(keggDbSel, "[", c("ENTRY", "NAME", "GENE"))
+		  idxPathSel <- seq(from = idxPathways[i], to = idxPathways[i+1]-1)	  
+		  keggDbSel <- KEGGREST::keggGet(dbentries = names(keggPathways)[idxPathSel])
+		  lapply(keggDbSel, "[", c("ENTRY", "NAME", "GENE"))
 	  }) 
 	  keggDb <- do.call(c, keggDbList)
   
 	  # extract gene IDs for each pathway
 	  # 'GENE' includes gene ID and description -> retain IDs only
-      geneSets <- lapply(keggDb, function(x) grep("^\\d+$", x$GENE, value = TRUE))
+    geneSets <- lapply(keggDb, function(x) grep("^\\d+$", x$GENE, value = TRUE))
 	  
 	  # extract pathway name
 	  descriptions <- sapply(keggDb, "[[", "NAME")
-	  # remove specie name in description:
-	  org <- KEGGREST::keggList("organism")
-	  idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
-	  keggSpecie <- org[idxOrg, which(colnames(org) == "species")]
-	  descriptions <- sub(paste(" -", keggSpecie), "", descriptions, fixed = TRUE)
-	  
+	  descriptions <- formatKEGGDescription(descriptions, species = species)
+   
 	  # extract pathway IDs
 	  names(geneSets) <- names(descriptions) <- sapply(keggDb, "[[", "ENTRY")
 	  
