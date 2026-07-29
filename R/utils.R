@@ -402,9 +402,10 @@ formatKEGGDescription <- function(descriptions, species = "Mouse"){
   )
   
   # remove specie name in description:
-  org <- KEGGREST::keggList("organism")
-  idxOrg <- which(org[, which(colnames(org) == "organism")] == prefix)
-  keggSpecie <- org[idxOrg, which(colnames(org) == "species")]
+  genomes <- KEGGREST::keggList("genome")
+  prefixAll <- sub("^(.+); (.+)", "\\1", genomes)
+  speciesAll <- sub("^(.+); (.+)", "\\2", genomes)
+  keggSpecie <- speciesAll[match(prefix, prefixAll)]
   descriptions <- sub(paste(" -", keggSpecie), "", descriptions, fixed = TRUE)
   
   return(descriptions)

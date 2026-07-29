@@ -1,3 +1,5 @@
+1.61.1
+  o KEGG gene set description: KEGG list API update: organism -> genome
 1.55.1
   o addGeneSetDescription: fix issue KEGG
   o doc: remove description-like items in itemize (R-devel 11/10/2023)
